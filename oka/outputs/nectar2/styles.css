@@ -17,3 +17,4 @@
 .cart-item .remove{min-height:38px;border:1px solid rgba(0,0,0,.3);background:transparent;padding:10px 14px;border-radius:2px;font-size:10px;font-weight:600;letter-spacing:.06em;cursor:pointer;opacity:.78;transition:background .2s,color .2s,opacity .2s}
 .cart-item .remove:hover,.cart-item .remove:focus-visible{background:var(--ink);color:var(--cream);opacity:1}
 .cart-overlay{z-index:80}.cart-drawer{z-index:81}.toast{z-index:90}
+.bag{padding:9px 12px;display:flex;align-items:center;gap:8px}.bag svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.bag span{margin-left:0}

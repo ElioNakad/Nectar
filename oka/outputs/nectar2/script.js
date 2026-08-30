@@ -61,6 +61,7 @@ qa('.quick-add').forEach(btn=>btn.addEventListener('click',()=>{
 }));
 q('#closeToast').addEventListener('click',()=>q('#toast').classList.remove('show'));
 q('#bagBtn').addEventListener('click',openCart);q('#closeCart').addEventListener('click',closeCart);q('#cartOverlay').addEventListener('click',closeCart);
+q('#whatsappCheckout').addEventListener('click',()=>setTimeout(()=>{cart=[];renderCart();closeCart()},0));
 q('#emptyShop').addEventListener('click',()=>{window.location.href='shop.html'});
 q('#cartItems').addEventListener('click',e=>{const button=e.target.closest('[data-action]');if(!button)return;const item=cart.find(i=>i.key===button.dataset.id);if(!item)return;if(button.dataset.action==='plus')item.qty++;if(button.dataset.action==='minus')item.qty--;if(button.dataset.action==='remove'||item.qty<1)cart=cart.filter(i=>i.key!==item.key);renderCart()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCart()});renderCart();

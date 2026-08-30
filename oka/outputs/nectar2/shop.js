@@ -70,6 +70,7 @@ $('#clearFilters').addEventListener('click',()=>{activeGender='all';query='';sor
 
 const glow=$('.cursor-glow');window.addEventListener('pointermove',event=>{glow.style.left=event.clientX+'px';glow.style.top=event.clientY+'px'});
 $('#bagBtn').addEventListener('click',openCart);$('#closeCart').addEventListener('click',closeCart);$('#cartOverlay').addEventListener('click',closeCart);$('#closeToast').addEventListener('click',()=>$('#toast').classList.remove('show'));
+$('#whatsappCheckout').addEventListener('click',()=>setTimeout(()=>{cart=[];renderCart();closeCart()},0));
 $('#emptyShop').addEventListener('click',()=>{closeCart();$('#filterRail').scrollIntoView({behavior:'smooth'})});
 $('#cartItems').addEventListener('click',event=>{const button=event.target.closest('[data-action]');if(!button)return;const item=cart.find(entry=>entry.key===button.dataset.id);if(!item)return;if(button.dataset.action==='plus')item.qty++;if(button.dataset.action==='minus')item.qty--;if(button.dataset.action==='remove'||item.qty<1)cart=cart.filter(entry=>entry.key!==item.key);renderCart()});
 document.addEventListener('keydown',event=>{if(event.key==='Escape')closeCart()});
