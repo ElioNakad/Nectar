@@ -4,7 +4,7 @@ A cinematic, responsive luxury fragrance landing page with 3D pointer tilt, magn
 
 `shop.html` is the separate full-catalog experience. It loads 1,313 products from the generated local `catalog-data.js`, supports Women, Men and Unisex filters, name/vendor search, price/name sorting, and progressive rendering for performance. Product cards link to their matching source-store page.
 
-Gender uses the source catalog's tags and product-description metadata. Products without an explicit source gender are included under Unisex so every catalog item remains discoverable.
+Gender uses the source catalog's tags, product-description metadata, and explicit wording in product names. Products without an explicit source gender remain under All and display “Not specified”; they are not assigned to Women, Men, or Unisex.
 
 Open `index.html` directly, or run any simple static file server from this directory.
 

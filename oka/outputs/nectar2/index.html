@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="NECTAR — a hypnotic amber fragrance made to be remembered.">
-  <title>NECTAR — Wear the Afterglow</title>
+  <meta name="description" content="Browse the Nectar fragrance catalog.">
+  <title>NECTAR — Fragrance Catalog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Italiana&display=swap" rel="stylesheet">
@@ -16,12 +16,12 @@
 
   <header class="nav" id="nav">
     <a class="brand" href="#top" aria-label="Nectar home">NECTAR<span>PARFUMS</span></a>
-    <nav aria-label="Main navigation">
+    <nav id="mainMenu" aria-label="Main navigation">
       <a href="shop.html">Shop</a>
-      <a href="#story">The story</a>
-      <a href="#notes">The notes</a>
-      <a href="#ritual">The ritual</a>
+      <a href="#catalog">Catalog</a>
+      <a href="#shop">Featured</a>
     </nav>
+    <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-controls="mainMenu" aria-expanded="false"><span></span><span></span></button>
     <button class="bag" id="bagBtn" aria-label="Shopping bag">Bag <span id="bagCount">0</span></button>
   </header>
 
@@ -32,121 +32,77 @@
         <div class="hero-shade"></div>
       </div>
       <div class="hero-copy">
-        <p class="eyebrow reveal">Extrait de parfum · 50 ml</p>
-        <h1 class="reveal">Wear the<br><em>afterglow.</em></h1>
-        <p class="hero-lede reveal">Golden skin. Midnight air. A slow-burning trail of saffron, wild honey and smoked vanilla that refuses to be forgotten.</p>
+        <p class="eyebrow reveal">Complete fragrance catalog</p>
+        <h1 class="reveal">Find your next<br><em>fragrance.</em></h1>
+        <p class="hero-lede reveal">Browse the complete product catalog or start with six featured fragrances below.</p>
         <div class="hero-actions reveal">
           <a class="cta magnetic" href="shop.html">Shop the collection <span>1,313 scents</span></a>
-          <a class="text-link" href="#notes">Enter the scent <span>↘</span></a>
+          <a class="text-link" href="#shop">View featured <span>↘</span></a>
         </div>
-        <div class="micro-proof reveal"><span>★★★★★</span> 4.9 / 5 from 2,100+ wearers</div>
       </div>
-      <div class="scroll-cue" aria-hidden="true">Scroll to surrender <span></span></div>
+      <div class="scroll-cue" aria-hidden="true">View catalog <span></span></div>
     </section>
 
-    <section class="manifesto" id="story">
-      <p class="section-no">01 / The obsession</p>
+    <section class="manifesto" id="catalog">
+      <p class="section-no">01 / The catalog</p>
       <div class="manifesto-copy reveal">
-        <p>Not a fragrance that enters the room.</p>
-        <h2>One that <em>lingers</em><br>after you leave.</h2>
+        <p>Browse, filter and choose.</p>
+        <h2>Everything in<br><em>one place.</em></h2>
       </div>
       <div class="stat-row reveal">
-        <div><strong>12H</strong><span>Skin longevity</span></div>
-        <div><strong>28%</strong><span>Perfume oils</span></div>
-        <div><strong>∞</strong><span>Second glances</span></div>
+        <div><strong>1,313</strong><span>Catalog products</span></div>
+        <div><strong>6</strong><span>Featured below</span></div>
+        <div><strong>2</strong><span>Bottle sizes</span></div>
       </div>
     </section>
 
     <section class="collection" id="shop">
       <div class="collection-head">
-        <div><p class="section-no">02 / The collection</p><h2 class="reveal">Bottled<br><em>obsessions.</em></h2></div>
+        <div><p class="section-no">02 / Featured products</p><h2 class="reveal">Featured<br><em>fragrances.</em></h2></div>
         <div class="collection-intro reveal">
-          <p>Six featured signatures, reimagined at an accessible concentration. Choose a <strong>50 ML bottle for $7</strong> or a <strong>100 ML bottle for $11</strong>.</p>
+          <p>Six products from the catalog. Choose a <strong>50 ML bottle for $7</strong> or a <strong>100 ML bottle for $11</strong>.</p>
           <a class="shop-path" href="shop.html">Browse all 1,313 fragrances <span>→</span></a>
         </div>
       </div>
       <div class="product-grid">
-        <article class="product-card reveal" data-id="aventus" data-name="Our Creation of Creed's Aventus" data-price="45" data-image="https://parfum.sa/cdn/shop/files/Creed_s_Aventus_main_cropped_abc9e15c-59fd-474b-9745-dba47a42f452.jpg?v=1784120135&amp;width=800">
-          <div class="product-image"><span class="badge">Bestseller</span><img loading="lazy" src="https://parfum.sa/cdn/shop/files/Creed_s_Aventus_main_cropped_abc9e15c-59fd-474b-9745-dba47a42f452.jpg?v=1784120135&amp;width=800" alt="Our Creation of Creed's Aventus bottle"></div>
-          <div class="product-info"><p>Chypre · Fruity</p><h3>Creed's<br>Aventus</h3><div class="featured-options"><button class="quick-add" data-size="50" data-price="7">50 ML <b>$7</b></button><button class="quick-add" data-size="100" data-price="11">100 ML <b>$11</b></button></div></div>
+        <article class="product-card reveal" data-id="aventus" data-name="Our Creation of Creed's Aventus" data-image="https://parfum.sa/cdn/shop/files/Creed_s_Aventus_main_cropped_abc9e15c-59fd-474b-9745-dba47a42f452.jpg?v=1784120135&amp;width=800">
+          <div class="product-image"><img loading="lazy" src="https://parfum.sa/cdn/shop/files/Creed_s_Aventus_main_cropped_abc9e15c-59fd-474b-9745-dba47a42f452.jpg?v=1784120135&amp;width=800" alt="Our Creation of Creed's Aventus bottle"></div>
+          <div class="product-info"><p>Creed's</p><h3>Creed's<br>Aventus</h3><div class="featured-options"><button class="quick-add" data-size="50" data-price="7">50 ML <b>$7</b></button><button class="quick-add" data-size="100" data-price="11">100 ML <b>$11</b></button></div></div>
         </article>
-        <article class="product-card reveal" data-id="imaginations" data-name="Our Creation of LV's Imaginations" data-price="45" data-image="https://parfum.sa/cdn/shop/files/Imagination_Main_image_3b7e2552-d574-4d38-8be9-b40e2293954f.jpg?v=1759388777&amp;width=800">
+        <article class="product-card reveal" data-id="imaginations" data-name="Our Creation of LV's Imaginations" data-image="https://parfum.sa/cdn/shop/files/Imagination_Main_image_3b7e2552-d574-4d38-8be9-b40e2293954f.jpg?v=1759388777&amp;width=800">
           <div class="product-image"><img loading="lazy" src="https://parfum.sa/cdn/shop/files/Imagination_Main_image_3b7e2552-d574-4d38-8be9-b40e2293954f.jpg?v=1759388777&amp;width=800" alt="Our Creation of LV's Imaginations bottle"></div>
-          <div class="product-info"><p>Citrus · Aromatic</p><h3>LV's<br>Imaginations</h3><div class="featured-options"><button class="quick-add" data-size="50" data-price="7">50 ML <b>$7</b></button><button class="quick-add" data-size="100" data-price="11">100 ML <b>$11</b></button></div></div>
+          <div class="product-info"><p>LV's</p><h3>LV's<br>Imaginations</h3><div class="featured-options"><button class="quick-add" data-size="50" data-price="7">50 ML <b>$7</b></button><button class="quick-add" data-size="100" data-price="11">100 ML <b>$11</b></button></div></div>
         </article>
-        <article class="product-card reveal" data-id="bleu" data-name="Our Creation of Chanel's Bleu De Chanel" data-price="45" data-image="https://parfum.sa/cdn/shop/files/Bleu_De_Chanel_main_cropped.jpg?v=1784120042&amp;width=800">
+        <article class="product-card reveal" data-id="bleu" data-name="Our Creation of Chanel's Bleu De Chanel" data-image="https://parfum.sa/cdn/shop/files/Bleu_De_Chanel_main_cropped.jpg?v=1784120042&amp;width=800">
           <div class="product-image"><img loading="lazy" src="https://parfum.sa/cdn/shop/files/Bleu_De_Chanel_main_cropped.jpg?v=1784120042&amp;width=800" alt="Our Creation of Chanel's Bleu De Chanel bottle"></div>
-          <div class="product-info"><p>Woody · Aromatic</p><h3>Chanel's<br>Bleu De Chanel</h3><div class="featured-options"><button class="quick-add" data-size="50" data-price="7">50 ML <b>$7</b></button><button class="quick-add" data-size="100" data-price="11">100 ML <b>$11</b></button></div></div>
+          <div class="product-info"><p>Chanel's</p><h3>Chanel's<br>Bleu De Chanel</h3><div class="featured-options"><button class="quick-add" data-size="50" data-price="7">50 ML <b>$7</b></button><button class="quick-add" data-size="100" data-price="11">100 ML <b>$11</b></button></div></div>
         </article>
-        <article class="product-card reveal" data-id="sauvage" data-name="Our Creation of Dior's Sauvage" data-price="45" data-image="https://parfum.sa/cdn/shop/files/Sauvage_Main_image.jpg?v=1759390319&amp;width=800">
-          <div class="product-image"><span class="badge">Most loved</span><img loading="lazy" src="https://parfum.sa/cdn/shop/files/Sauvage_Main_image.jpg?v=1759390319&amp;width=800" alt="Our Creation of Dior's Sauvage bottle"></div>
-          <div class="product-info"><p>Fresh · Spicy</p><h3>Dior's<br>Sauvage</h3><div class="featured-options"><button class="quick-add" data-size="50" data-price="7">50 ML <b>$7</b></button><button class="quick-add" data-size="100" data-price="11">100 ML <b>$11</b></button></div></div>
+        <article class="product-card reveal" data-id="sauvage" data-name="Our Creation of Dior's Sauvage" data-image="https://parfum.sa/cdn/shop/files/Sauvage_Main_image.jpg?v=1759390319&amp;width=800">
+          <div class="product-image"><img loading="lazy" src="https://parfum.sa/cdn/shop/files/Sauvage_Main_image.jpg?v=1759390319&amp;width=800" alt="Our Creation of Dior's Sauvage bottle"></div>
+          <div class="product-info"><p>Dior's</p><h3>Dior's<br>Sauvage</h3><div class="featured-options"><button class="quick-add" data-size="50" data-price="7">50 ML <b>$7</b></button><button class="quick-add" data-size="100" data-price="11">100 ML <b>$11</b></button></div></div>
         </article>
-        <article class="product-card reveal" data-id="tobacco" data-name="Our Creation of TF's Tobacco Vanille" data-price="45" data-image="https://parfum.sa/cdn/shop/files/Tobacco_Vanille_main_cropped.jpg?v=1784119996&amp;width=800">
+        <article class="product-card reveal" data-id="tobacco" data-name="Our Creation of TF's Tobacco Vanille" data-image="https://parfum.sa/cdn/shop/files/Tobacco_Vanille_main_cropped.jpg?v=1784119996&amp;width=800">
           <div class="product-image"><img loading="lazy" src="https://parfum.sa/cdn/shop/files/Tobacco_Vanille_main_cropped.jpg?v=1784119996&amp;width=800" alt="Our Creation of TF's Tobacco Vanille bottle"></div>
-          <div class="product-info"><p>Amber · Spicy</p><h3>TF's<br>Tobacco Vanille</h3><div class="featured-options"><button class="quick-add" data-size="50" data-price="7">50 ML <b>$7</b></button><button class="quick-add" data-size="100" data-price="11">100 ML <b>$11</b></button></div></div>
+          <div class="product-info"><p>TF's</p><h3>TF's<br>Tobacco Vanille</h3><div class="featured-options"><button class="quick-add" data-size="50" data-price="7">50 ML <b>$7</b></button><button class="quick-add" data-size="100" data-price="11">100 ML <b>$11</b></button></div></div>
         </article>
-        <article class="product-card reveal" data-id="tuscan" data-name="Our Creation of TF's Tuscan Leather" data-price="45" data-image="https://parfum.sa/cdn/shop/files/Tuscan_Leather_main_cropped.jpg?v=1784120004&amp;width=800">
+        <article class="product-card reveal" data-id="tuscan" data-name="Our Creation of TF's Tuscan Leather" data-image="https://parfum.sa/cdn/shop/files/Tuscan_Leather_main_cropped.jpg?v=1784120004&amp;width=800">
           <div class="product-image"><img loading="lazy" src="https://parfum.sa/cdn/shop/files/Tuscan_Leather_main_cropped.jpg?v=1784120004&amp;width=800" alt="Our Creation of TF's Tuscan Leather bottle"></div>
-          <div class="product-info"><p>Leather · Smoky</p><h3>TF's<br>Tuscan Leather</h3><div class="featured-options"><button class="quick-add" data-size="50" data-price="7">50 ML <b>$7</b></button><button class="quick-add" data-size="100" data-price="11">100 ML <b>$11</b></button></div></div>
+          <div class="product-info"><p>TF's</p><h3>TF's<br>Tuscan Leather</h3><div class="featured-options"><button class="quick-add" data-size="50" data-price="7">50 ML <b>$7</b></button><button class="quick-add" data-size="100" data-price="11">100 ML <b>$11</b></button></div></div>
         </article>
       </div>
       <p class="price-note">All prices are in USD. Choose 50 ML for $7 or 100 ML for $11.</p>
     </section>
 
-    <section class="notes" id="notes">
-      <div class="notes-head">
-        <p class="section-no">03 / The composition</p>
-        <h2 class="reveal">Three acts.<br>One addiction.</h2>
-        <p class="reveal">Move through the fragrance as it unfolds on skin.</p>
-      </div>
-      <div class="note-stack">
-        <article class="note-card active" data-color="#c98b3d">
-          <span>01</span><div><p>First touch</p><h3>Saffron<br>&amp; Bergamot</h3></div><p class="note-copy">Bright, spiced, electric. The moment before restraint disappears.</p><i>TOP</i>
-        </article>
-        <article class="note-card" data-color="#8b3d56">
-          <span>02</span><div><p>The pull</p><h3>Wild Honey<br>&amp; Black Rose</h3></div><p class="note-copy">Velvet petals steeped in molten honey. Intimate, rich, impossible to ignore.</p><i>HEART</i>
-        </article>
-        <article class="note-card" data-color="#5a3a29">
-          <span>03</span><div><p>The trace</p><h3>Smoked Vanilla<br>&amp; Oud</h3></div><p class="note-copy">A dark, skin-close warmth that stays long after midnight.</p><i>BASE</i>
-        </article>
-      </div>
-    </section>
-
-    <section class="quote-band">
-      <div class="marquee"><span>DESIRE, DISTILLED · DESIRE, DISTILLED · DESIRE, DISTILLED · </span><span>DESIRE, DISTILLED · DESIRE, DISTILLED · DESIRE, DISTILLED · </span></div>
-      <blockquote class="reveal">“The first time I wore it, three strangers asked what it was. I stopped telling them.”<cite>— Amélie, Paris</cite></blockquote>
-    </section>
-
-    <section class="ritual" id="ritual">
-      <div class="ritual-visual reveal" id="ritualTilt">
-        <div class="orb orb-one"></div><div class="orb orb-two"></div><div class="bottle-echo">N</div>
-        <span>28%<small>pure perfume<br>concentration</small></span>
-      </div>
-      <div class="ritual-copy reveal">
-        <p class="section-no">04 / Your ritual</p>
-        <h2>Made to melt<br>into <em>you.</em></h2>
-        <div class="accordions">
-          <button class="accordion open"><span>01</span> Pulse <b>−</b></button>
-          <div class="accordion-body open">Mist once onto pulse points. Let the warmth of your skin awaken the saffron and rose.</div>
-          <button class="accordion"><span>02</span> Layer <b>+</b></button>
-          <div class="accordion-body">Apply unscented balm first for an even deeper, longer trail.</div>
-          <button class="accordion"><span>03</span> Leave a trace <b>+</b></button>
-          <div class="accordion-body">Do not rub. Let the fragrance dry slowly and become entirely your own.</div>
-        </div>
-      </div>
-    </section>
-
     <section class="buy-panel">
-      <div><p class="eyebrow">Six signatures · One impossible choice</p><h2>Your next<br>obsession waits.</h2></div>
+      <div><p class="eyebrow">Complete catalog</p><h2>Browse every<br>product.</h2></div>
       <div class="buy-card reveal"><p class="final-kicker">Go beyond the icons</p><h3>Explore every creation</h3><p>Search 1,313 fragrances for women, men and everyone.</p><a class="cta light magnetic" href="shop.html">Open the full shop <span>Explore all</span></a><p class="assurance">Filter by gender · Search by name · Prices in USD</p></div>
     </section>
   </main>
 
   <footer>
     <a class="brand" href="#top">NECTAR<span>PARFUMS</span></a>
-    <p>Made for the hours no one forgets.</p>
-    <div><a href="#">Instagram</a><a href="#">Contact</a><a href="#">Shipping</a></div>
+    <p>Browse the fragrance catalog.</p>
+    <div><a href="shop.html">Shop all</a><a href="#top">Back to top</a></div>
     <small>© 2026 Nectar Parfums</small>
   </footer>
 
@@ -155,7 +111,7 @@
     <div class="cart-head"><div><p>Your selection</p><h2>Bag <span id="drawerCount">0</span></h2></div><button id="closeCart" aria-label="Close bag">×</button></div>
     <div class="cart-items" id="cartItems"></div>
     <div class="cart-empty" id="cartEmpty"><div>∅</div><h3>Your bag is empty.</h3><p>Choose the fragrance they will remember you by.</p><button class="text-link" id="emptyShop">Explore the collection →</button></div>
-    <div class="cart-footer" id="cartFooter"><div><span>Subtotal</span><strong id="cartTotal">$0</strong></div><p>Selected bottle sizes · Shipping calculated at checkout</p><a class="checkout" href="shop.html">Continue shopping <span>→</span></a><small>This is a local concept cart; payment processing is not connected.</small></div>
+    <div class="cart-footer" id="cartFooter"><div><span>Subtotal</span><strong id="cartTotal">$0</strong></div><p>Selected bottle sizes · Prices in USD</p><a class="checkout" id="whatsappCheckout" href="https://wa.me/96176441471" target="_blank" rel="noopener">Checkout via WhatsApp <span>↗</span></a><small>Your order details will open in WhatsApp for you to review and send.</small></div>
   </aside>
   <div class="toast" id="toast" role="status"><span>✓</span><div><strong>Added to your bag.</strong><small id="toastDetail">50 ML · $7</small></div><button id="closeToast" aria-label="Close">×</button></div>
   <script src="script.js"></script>

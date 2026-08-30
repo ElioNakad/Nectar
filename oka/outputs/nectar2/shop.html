@@ -14,17 +14,22 @@
   <div class="grain" aria-hidden="true"></div>
   <div class="cursor-glow" aria-hidden="true"></div>
 
-  <header class="nav">
-    <a class="brand" href="index.html">NECTAR<span>PARFUMS</span></a>
-    <nav aria-label="Shop navigation"><a class="active" href="shop.html">Shop all</a><a href="index.html#story">Our story</a><a href="index.html#notes">Scent guide</a></nav>
-    <a class="back" href="index.html">Back home <span>↗</span></a>
+  <header class="nav" id="nav">
+    <a class="brand" href="index.html" aria-label="Nectar home">NECTAR<span>PARFUMS</span></a>
+    <nav id="mainMenu" aria-label="Main navigation">
+      <a class="active" href="shop.html">Shop</a>
+      <a href="index.html#catalog">Catalog</a>
+      <a href="index.html#shop">Featured</a>
+    </nav>
+    <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-controls="mainMenu" aria-expanded="false"><span></span><span></span></button>
+    <button class="bag" id="bagBtn" aria-label="Shopping bag">Bag <span id="bagCount">0</span></button>
   </header>
 
   <main>
     <section class="shop-hero">
-      <p class="eyebrow">The complete fragrance library</p>
+      <p class="eyebrow">The complete product catalog</p>
       <h1>Find the one<br>that feels like <em>you.</em></h1>
-      <div class="hero-meta"><p>From fresh citrus to dark oud. Search every creation, then filter the collection by who it was composed for.</p><span><strong id="totalCount">1,313</strong> fragrances</span></div>
+      <div class="hero-meta"><p>Search products by fragrance name or brand. Use a gender filter where the source catalog provides that label.</p><span><strong id="totalCount">1,313</strong> catalog products</span></div>
     </section>
 
     <section class="catalog-shell">
@@ -42,7 +47,7 @@
         </div>
       </div>
 
-      <p class="catalog-note">Gender follows the source catalog's tags and descriptions. Products without an explicit gender label are grouped under Unisex so the complete collection remains discoverable.</p>
+      <p class="catalog-note">Gender filters use only labels found in the source catalog's tags, descriptions or product names. Products without a gender label remain available under All and are marked Not specified.</p>
       <div class="results-head"><p><strong id="resultCount">0</strong> scents found</p><p>All prices shown in USD</p></div>
       <div class="product-grid" id="productGrid" aria-live="polite"></div>
       <div class="empty-state" id="emptyState" hidden><span>∅</span><h2>No scent found.</h2><p>Try another name or clear the filters.</p><button id="clearFilters">Clear filters</button></div>
@@ -50,7 +55,16 @@
     </section>
   </main>
 
-  <footer><a class="brand" href="index.html">NECTAR<span>PARFUMS</span></a><p>Every mood. Every memory. One collection.</p><small>Catalog pricing and imagery sourced from the linked storefront.</small></footer>
+  <footer><a class="brand" href="index.html">NECTAR<span>PARFUMS</span></a><p>Browse the complete catalog.</p><small>Product names and imagery come from the linked source catalog. The 50 ML and 100 ML prices were provided for this website.</small></footer>
+
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true" aria-label="Shopping bag">
+    <div class="cart-head"><div><p>Your selection</p><h2>Bag <span id="drawerCount">0</span></h2></div><button id="closeCart" aria-label="Close bag">×</button></div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-empty" id="cartEmpty"><div>∅</div><h3>Your bag is empty.</h3><p>Choose a perfume and bottle size.</p><button class="empty-shop" id="emptyShop">Browse the shop →</button></div>
+    <div class="cart-footer" id="cartFooter"><div><span>Subtotal</span><strong id="cartTotal">$0</strong></div><p>Selected bottle sizes · Prices in USD</p><a class="checkout" id="whatsappCheckout" href="https://wa.me/96176441471" target="_blank" rel="noopener">Checkout via WhatsApp <span>↗</span></a><small>Your order details will open in WhatsApp for you to review and send.</small></div>
+  </aside>
+  <div class="toast" id="toast" role="status"><span>✓</span><div><strong>Added to your bag.</strong><small id="toastDetail">50 ML · $7</small></div><button id="closeToast" aria-label="Close">×</button></div>
 
   <script src="catalog-data.js"></script>
   <script src="shop.js"></script>
