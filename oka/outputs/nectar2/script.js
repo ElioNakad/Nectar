@@ -54,7 +54,7 @@ function renderCart(){
   q('#cartItems').innerHTML=cart.map(item=>`<article class="cart-item"><img src="${item.image}" alt=""><div><p>${item.size} ML · Eau de parfum</p><h3>${item.name}</h3><div class="qty"><button data-action="minus" data-id="${item.key}" aria-label="Decrease quantity">−</button><span>${item.qty}</span><button data-action="plus" data-id="${item.key}" aria-label="Increase quantity">+</button></div></div><div><strong>${money(item.price*item.qty)}</strong><button class="remove" data-action="remove" data-id="${item.key}">Remove</button></div></article>`).join('');
   const orderLines=cart.map((item,index)=>`${index+1}. ${item.name}\nSize: ${item.size} ML\nQuantity: ${item.qty}\nItem total: ${money(item.price*item.qty)}`);
   const orderMessage=`Hello, I would like to place this perfume order:\n\n${orderLines.join('\n\n')}\n\nSubtotal: ${money(total)}`;
-  q('#whatsappCheckout').href=`https://wa.me/96176441471?text=${encodeURIComponent(orderMessage)}`;
+  q('#whatsappCheckout').href=`https://wa.me/96171646308?text=${encodeURIComponent(orderMessage)}`;
   saveCart();
 }
 q('#featuredGrid').addEventListener('click',event=>{

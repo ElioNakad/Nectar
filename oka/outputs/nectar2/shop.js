@@ -245,7 +245,7 @@ function renderCart() {
 
   const orderLines = cart.map((item, index) => `${index + 1}. ${item.name}\nSize: ${item.size} ML\nQuantity: ${item.qty}\nItem total: ${formatMoney(item.price * item.qty)}`);
   const orderMessage = `Hello, I would like to place this perfume order:\n\n${orderLines.join('\n\n')}\n\nSubtotal: ${formatMoney(total)}`;
-  $('#whatsappCheckout').href = `https://wa.me/96176441471?text=${encodeURIComponent(orderMessage)}`;
+  $('#whatsappCheckout').href = `https://wa.me/96171646308?text=${encodeURIComponent(orderMessage)}`;
   saveCart();
 }
 
