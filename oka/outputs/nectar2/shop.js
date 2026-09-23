@@ -1,8 +1,9 @@
 import { getSupabase } from './supabase-client.js';
+import { productImageForPosition } from './product-images.js';
 
 const $ = (selector, context = document) => context.querySelector(selector);
 const $$ = (selector, context = document) => [...context.querySelectorAll(selector)];
-const PAGE_SIZE = 4;
+const PAGE_SIZE = 10;
 
 let activeGender = 'all';
 let searchQuery = '';
@@ -71,8 +72,9 @@ function searchableTerm(value) {
   return value.trim().replace(/[%_(),]/g, ' ').replace(/\s+/g, ' ');
 }
 
-function productCard(product) {
+function productCard(product, position) {
   const sizes = Array.isArray(product.sizes) ? product.sizes : [];
+  const productImage = productImageForPosition(position, PAGE_SIZE);
   const sizeButtons = sizes.map((size, index) => {
     const price = size.override_price ?? size.default_price ?? size.price;
     return `<button class="size-option${index === 0 ? ' selected' : ''}" data-size="${escapeHtml(size.capacity)}" data-price="${escapeHtml(price)}" aria-pressed="${index === 0}"><span>${escapeHtml(size.capacity)} ML</span><strong>${formatMoney(price)}</strong></button>`;
@@ -80,7 +82,7 @@ function productCard(product) {
   const genderLabel = product.sex === 'unspecified' ? 'Not specified' : product.sex;
   const name = displayName(product);
 
-  return `<article class="product-card" data-gender="${escapeHtml(product.sex)}" data-product-id="${escapeHtml(product.id)}"><div class="product-image"><span class="gender-tag">${escapeHtml(genderLabel)}</span><img loading="lazy" src="${escapeHtml(product.image_url)}" alt="${escapeHtml(name)} bottle"></div><div class="product-info"><div class="product-vendor">${escapeHtml(product.brand_name)}</div><h2>${escapeHtml(product.name)}</h2><div class="size-options" role="group" aria-label="Choose bottle size">${sizeButtons || '<span>Currently unavailable</span>'}</div><button class="add-to-bag" type="button"${sizeButtons ? '' : ' disabled'}>Add selected size to bag <span>+</span></button></div></article>`;
+  return `<article class="product-card" data-gender="${escapeHtml(product.sex)}" data-product-id="${escapeHtml(product.id)}" data-product-image="${escapeHtml(productImage)}"><div class="product-image"><span class="gender-tag">${escapeHtml(genderLabel)}</span><img loading="lazy" src="${escapeHtml(productImage)}" alt="${escapeHtml(name)} bottle"></div><div class="product-info"><div class="product-vendor">${escapeHtml(product.brand_name)}</div><h2>${escapeHtml(product.name)}</h2><div class="size-options" role="group" aria-label="Choose bottle size">${sizeButtons || '<span>Currently unavailable</span>'}</div><button class="add-to-bag" type="button"${sizeButtons ? '' : ' disabled'}>Add selected size to bag <span>+</span></button></div></article>`;
 }
 
 function showCatalogMessage(title, message) {
@@ -247,7 +249,7 @@ function renderCart() {
   saveCart();
 }
 
-function addToCart(product, size, price) {
+function addToCart(product, size, price, image) {
   const key = `${product.id}-${size}`;
   const existing = cart.find((item) => item.key === key);
   if (existing) {
@@ -259,7 +261,7 @@ function addToCart(product, size, price) {
       name: displayName(product),
       size,
       price,
-      image: product.image_url,
+      image,
       qty: 1,
     });
   }
@@ -311,7 +313,7 @@ $('#productGrid').addEventListener('click', (event) => {
   const selected = card.querySelector('.size-option.selected');
   if (!product || !selected) return;
 
-  addToCart(product, selected.dataset.size, Number(selected.dataset.price));
+  addToCart(product, selected.dataset.size, Number(selected.dataset.price), card.dataset.productImage);
   addButton.classList.add('added');
   addButton.firstChild.textContent = 'Added to bag ';
   setTimeout(() => {

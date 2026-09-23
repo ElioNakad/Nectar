@@ -1,4 +1,5 @@
 import { getSupabase } from './supabase-client.js';
+import { productImageForPosition } from './product-images.js';
 
 const q=(s,c=document)=>c.querySelector(s), qa=(s,c=document)=>[...c.querySelectorAll(s)];
 const escapeHtml=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
@@ -84,11 +85,12 @@ async function loadFeaturedProducts(){
   updateCount('[data-catalog-count]',catalogResult.count);
   updateCount('[data-featured-count]',data.length);
   updateCount('[data-size-count]',sizeResult.count);
-  q('#featuredGrid').innerHTML=data.map(product=>{
+  q('#featuredGrid').innerHTML=data.map((product,index)=>{
     const productName=`${product.brand_name} ${product.name}`.trim();
+    const productImage=productImageForPosition(index,10);
     const sizes=Array.isArray(product.sizes)?product.sizes:[];
     const options=sizes.map(size=>{const price=size.override_price??size.default_price??size.price;return `<button class="quick-add" data-size="${escapeHtml(size.capacity)}" data-price="${escapeHtml(price)}">${escapeHtml(size.capacity)} ML <b>${money(Number(price))}</b></button>`}).join('');
-    return `<article class="product-card reveal visible" data-id="${escapeHtml(product.id)}" data-name="${escapeHtml(productName)}" data-image="${escapeHtml(product.image_url)}"><div class="product-image"><img loading="lazy" src="${escapeHtml(product.image_url)}" alt="${escapeHtml(productName)} bottle"></div><div class="product-info"><p>${escapeHtml(product.brand_name)}</p><h3>${escapeHtml(product.brand_name)}<br>${escapeHtml(product.name)}</h3><div class="featured-options">${options}</div></div></article>`;
+    return `<article class="product-card reveal visible" data-id="${escapeHtml(product.id)}" data-name="${escapeHtml(productName)}" data-image="${escapeHtml(productImage)}"><div class="product-image"><img loading="lazy" src="${escapeHtml(productImage)}" alt="${escapeHtml(productName)} bottle"></div><div class="product-info"><p>${escapeHtml(product.brand_name)}</p><h3>${escapeHtml(product.brand_name)}<br>${escapeHtml(product.name)}</h3><div class="featured-options">${options}</div></div></article>`;
   }).join('');
 }
 
