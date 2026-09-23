@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nectar — Oriental Floral Perfumerie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  :root{
+    --void:#0c0703;
+    --void-2:#160d06;
+    --panel:#1c130a;
+    --amber:#c9781f;
+    --amber-deep:#7a4210;
+    --gold:#e8b84b;
+    --gold-soft:#f3d488;
+    --rose:#8b4a4a;
+    --ivory:#f2e8d5;
+    --ivory-dim:#b8a888;
+    --line:#3a2712;
+    --ease: cubic-bezier(.16,.8,.24,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--void);
+    color:var(--ivory);
+    font-family:'Inter',sans-serif;
+    font-weight:300;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--amber);color:var(--void);}
+
+  .mono{
+    font-family:'JetBrains Mono',monospace;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-size:.68rem;
+  }
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:500;letter-spacing:-0.01em;}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1.6rem 3rem;
+    mix-blend-mode:difference;
+  }
+  .nav-mark{font-family:'Fraunces',serif;font-style:italic;font-size:1.3rem;color:var(--ivory);}
+  .nav-links{display:flex;gap:2.4rem;align-items:center;}
+  .nav-links a{color:var(--ivory-dim);text-decoration:none;transition:color .3s var(--ease);}
+  .nav-links a:hover{color:var(--gold);}
+  .nav-cta{
+    color:var(--ivory)!important;border:1px solid var(--ivory);
+    padding:.55rem 1.1rem;border-radius:100px;
+  }
+  @media(max-width:720px){
+    nav{padding:1.2rem 1.4rem;}
+    .nav-links a:not(.nav-cta){display:none;}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    height:100svh;min-height:640px;
+    display:grid;grid-template-columns:1.1fr 1fr;
+    align-items:center;
+    overflow:hidden;
+    background:
+      radial-gradient(ellipse 80% 60% at 78% 45%, rgba(201,120,31,.16), transparent 60%),
+      linear-gradient(180deg, var(--void) 0%, var(--void-2) 100%);
+  }
+  .hex-field{position:absolute;inset:0;pointer-events:none;z-index:1;}
+  .hex{
+    position:absolute;
+    width:70px;height:80px;
+    clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    border:1px solid rgba(232,184,75,.16);
+    animation:drift 14s ease-in-out infinite;
+  }
+  @keyframes drift{
+    0%,100%{transform:translate(0,0) rotate(0deg);opacity:.5;}
+    50%{transform:translate(-14px,-26px) rotate(8deg);opacity:.9;}
+  }
+  .hero-text{position:relative;z-index:3;padding:0 3rem 0 3.4rem;}
+  .eyebrow{color:var(--gold);display:block;margin-bottom:1.3rem;}
+  .hero-text h1{
+    font-size:clamp(4rem,9vw,7.4rem);
+    font-style:italic;
+    line-height:.92;
+    color:var(--ivory);
+    background:linear-gradient(100deg,var(--gold-soft) 10%, var(--amber) 55%, var(--ivory) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero-sub{
+    font-family:'Fraunces',serif;font-style:italic;font-weight:400;
+    font-size:1.3rem;color:var(--ivory-dim);margin:1.2rem 0 1.6rem;
+  }
+  .hero-copy{max-width:30ch;color:var(--ivory-dim);line-height:1.7;font-size:.95rem;margin-bottom:2.2rem;}
+  .btn-row{display:flex;gap:1.1rem;align-items:center;flex-wrap:wrap;}
+  .btn{
+    font-family:'Inter';font-size:.85rem;letter-spacing:.02em;
+    padding:.95rem 1.7rem;border-radius:100px;
+    text-decoration:none;transition:transform .35s var(--ease), box-shadow .35s var(--ease);
+    display:inline-block;
+  }
+  .btn-primary{
+    background:linear-gradient(120deg,var(--gold) 0%, var(--amber) 100%);
+    color:var(--void);font-weight:600;
+  }
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 14px 30px -10px rgba(201,120,31,.6);}
+  .btn-ghost{color:var(--ivory-dim);border:1px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+
+  .hero-visual{position:relative;height:100%;z-index:2;}
+  #bottle-canvas{position:absolute;inset:0;width:100%;height:100%;}
+
+  .scroll-cue{
+    position:absolute;bottom:2.4rem;left:3.4rem;z-index:4;
+    display:flex;align-items:center;gap:.7rem;color:var(--ivory-dim);
+  }
+  .scroll-cue .line{width:1px;height:34px;background:var(--line);position:relative;overflow:hidden;}
+  .scroll-cue .line::after{
+    content:'';position:absolute;top:-100%;left:0;width:100%;height:100%;
+    background:var(--gold);animation:pour 2.2s ease-in-out infinite;
+  }
+  @keyframes pour{0%{top:-100%;}60%{top:100%;}100%{top:100%;}}
+
+  @media(max-width:900px){
+    .hero{grid-template-columns:1fr;}
+    .hero-visual{position:absolute;inset:0;opacity:.35;}
+    .hero-text{padding:0 1.5rem;}
+    .scroll-cue{left:1.5rem;}
+  }
+
+  /* ---------- SECTION SHARED ---------- */
+  section{position:relative;padding:8rem 3rem;}
+  .section-head{max-width:56ch;margin-bottom:4rem;}
+  .section-head h2{font-size:clamp(2.2rem,4vw,3.2rem);line-height:1.08;color:var(--ivory);}
+  .section-head .eyebrow{margin-bottom:1rem;}
+  @media(max-width:720px){section{padding:5rem 1.4rem;}}
+
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease), transform .9s var(--ease);}
+  .reveal.in-view{opacity:1;transform:translateY(0);}
+
+  /* ---------- STORY ---------- */
+  .story{
+    background:var(--void-2);
+    display:grid;grid-template-columns:.9fr 1.1fr;gap:5rem;align-items:center;
+  }
+  .story-panel{
+    height:460px;border-radius:4px;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(232,184,75,.5), transparent 55%),
+      radial-gradient(circle at 75% 80%, rgba(139,74,74,.45), transparent 55%),
+      linear-gradient(160deg,#2a1a0d,#0c0703 70%);
+    box-shadow:0 40px 80px -30px rgba(0,0,0,.7);
+    transform-style:preserve-3d;
+    transition:transform .1s ease-out;
+    position:relative;
+    overflow:hidden;
+  }
+  .story-panel::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(115deg, transparent 40%, rgba(255,255,255,.08) 50%, transparent 60%);
+    transform:translateX(-120%);
+  }
+  .story-panel:hover::after{transition:transform .9s var(--ease);transform:translateX(120%);}
+  .story-copy p{color:var(--ivory-dim);line-height:1.85;font-size:1.02rem;margin-bottom:1.3rem;max-width:46ch;}
+  .story-copy p:first-of-type{color:var(--ivory);font-family:'Fraunces',serif;font-size:1.2rem;font-style:italic;}
+  @media(max-width:900px){.story{grid-template-columns:1fr;gap:2.5rem;}.story-panel{height:320px;}}
+
+  /* ---------- NOTES / DESCENT ---------- */
+  .descent{background:var(--void);}
+  .tier{
+    display:grid;grid-template-columns:.5fr 1fr;gap:2rem;
+    padding:2.6rem 0;border-top:1px solid var(--line);
+    align-items:center;
+  }
+  .tier:last-child{border-bottom:1px solid var(--line);}
+  .tier-label{display:flex;flex-direction:column;gap:.4rem;}
+  .tier-label .name{font-family:'Fraunces',serif;font-style:italic;font-size:1.6rem;color:var(--ivory);}
+  .tier-label .time{color:var(--ivory-dim);}
+  .pills{display:flex;flex-wrap:wrap;gap:.7rem;}
+  .pill{
+    padding:.55rem 1.1rem;border-radius:100px;border:1px solid var(--line);
+    font-size:.85rem;color:var(--ivory-dim);
+    transition:border-color .4s var(--ease), color .4s var(--ease), transform .4s var(--ease);
+  }
+  .tier-top .pill{animation:rise 3.6s ease-in-out infinite;}
+  .tier-top .pill:nth-child(2){animation-delay:.4s;}
+  .tier-top .pill:nth-child(3){animation-delay:.8s;}
+  @keyframes rise{
+    0%,100%{transform:translateY(0);opacity:.55;}
+    50%{transform:translateY(-9px);opacity:1;border-color:var(--gold);color:var(--gold-soft);}
+  }
+  .tier-heart .pill{border-color:var(--amber-deep);animation:glow 3s ease-in-out infinite;}
+  .tier-heart .pill:nth-child(2){animation-delay:.5s;}
+  .tier-heart .pill:nth-child(3){animation-delay:1s;}
+  @keyframes glow{
+    0%,100%{box-shadow:0 0 0 rgba(232,184,75,0);color:var(--ivory-dim);}
+    50%{box-shadow:0 0 18px rgba(232,184,75,.25);color:var(--gold-soft);border-color:var(--gold);}
+  }
+  .tier-base .pill{background:rgba(122,66,16,.18);border-color:var(--amber-deep);color:var(--ivory);}
+  @media(max-width:720px){.tier{grid-template-columns:1fr;gap:1rem;}}
+
+  /* ---------- RITUAL ---------- */
+  .ritual{background:var(--void-2);}
+  .ritual-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--line);}
+  .rit-card{
+    background:var(--void-2);padding:2.8rem 2.2rem;
+    transition:transform .5s var(--ease), background .5s var(--ease);
+    transform-style:preserve-3d;
+  }
+  .rit-card:hover{transform:translateY(-8px) rotateX(2deg);background:#20150a;}
+  .rit-card .num{font-family:'JetBrains Mono';color:var(--amber);font-size:.8rem;letter-spacing:.15em;}
+  .rit-card h3{font-size:1.4rem;font-style:italic;color:var(--ivory);margin:1rem 0 .8rem;}
+  .rit-card p{color:var(--ivory-dim);font-size:.92rem;line-height:1.7;}
+  @media(max-width:800px){.ritual-grid{grid-template-columns:1fr;}}
+
+  /* ---------- CTA / FOOTER ---------- */
+  .cta{
+    text-align:center;padding:9rem 2rem;
+    background:radial-gradient(ellipse at 50% 0%, rgba(201,120,31,.18), transparent 60%), var(--void);
+  }
+  .cta h2{font-size:clamp(2.4rem,6vw,4.4rem);font-style:italic;color:var(--ivory);margin-bottom:2.2rem;}
+  footer{
+    border-top:1px solid var(--line);padding:3rem;
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem;
+    color:var(--ivory-dim);font-size:.85rem;
+  }
+  footer .foot-links{display:flex;gap:1.6rem;}
+  footer a{color:var(--ivory-dim);text-decoration:none;}
+  footer a:hover{color:var(--gold);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none!important;transition:none!important;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-mark">Nectar</div>
+  <div class="nav-links">
+    <a href="#pour">The Pour</a>
+    <a href="#descent">Notes</a>
+    <a href="#ritual">Ritual</a>
+    <a href="#acquire" class="nav-cta">Acquire</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hex-field" id="hexField"></div>
+
+  <div class="hero-text">
+    <span class="eyebrow mono">Oriental Floral · Unisex · 2025</span>
+    <h1>Nectar</h1>
+    <p class="hero-sub">A drop of gold, worn as skin.</p>
+    <p class="hero-copy">Cinnamon and almond open like a struck match over honey. Ylang ylang and rose settle into the warmth. Musk and cashmeran hold it there until morning.</p>
+    <div class="btn-row">
+      <a href="#acquire" class="btn btn-primary">Acquire the Bottle — $185</a>
+      <a href="#pour" class="btn btn-ghost">Read the Pour</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <canvas id="bottle-canvas"></canvas>
+  </div>
+
+  <div class="scroll-cue">
+    <div class="line"></div>
+    <span class="mono">Descend</span>
+  </div>
+</header>
+
+<section class="story" id="pour">
+  <div class="story-panel reveal"></div>
+  <div class="story-copy reveal">
+    <span class="eyebrow mono">The Pour</span>
+    <p>Harvested at the hour honey turns to amber.</p>
+    <p>We work at the edge of an orchard where almond trees have kept the same bees for five generations. Nectar is drawn at dusk, when the last light thickens the honey and the ylang ylang gives up its heaviest oil.</p>
+    <p>What's left after distillation is not sweet so much as warm — a scent that behaves like skin does, changing with the hour and the person wearing it.</p>
+  </div>
+</section>
+
+<section class="descent" id="descent">
+  <div class="section-head reveal">
+    <span class="eyebrow mono">The Descent</span>
+    <h2>Nothing in this bottle arrives at once.</h2>
+  </div>
+
+  <div class="tier tier-top reveal">
+    <div class="tier-label">
+      <span class="name">Top</span>
+      <span class="mono time">0 – 15 min</span>
+    </div>
+    <div class="pills">
+      <span class="pill">Cinnamon</span>
+      <span class="pill">Almond</span>
+      <span class="pill">Lemon</span>
+    </div>
+  </div>
+
+  <div class="tier tier-heart reveal">
+    <div class="tier-label">
+      <span class="name">Heart</span>
+      <span class="mono time">15 min – 3 hrs</span>
+    </div>
+    <div class="pills">
+      <span class="pill">White Honey</span>
+      <span class="pill">Ylang Ylang</span>
+      <span class="pill">Rose</span>
+    </div>
+  </div>
+
+  <div class="tier tier-base reveal">
+    <div class="tier-label">
+      <span class="name">Base</span>
+      <span class="mono time">3 hrs onward</span>
+    </div>
+    <div class="pills">
+      <span class="pill">Musk</span>
+      <span class="pill">Bourbon Vanilla</span>
+      <span class="pill">Cashmeran</span>
+    </div>
+  </div>
+</section>
+
+<section class="ritual" id="ritual">
+  <div class="section-head reveal">
+    <span class="eyebrow mono">How To Wear</span>
+    <h2>Three rules, no rubbing.</h2>
+  </div>
+  <div class="ritual-grid reveal">
+    <div class="rit-card">
+      <span class="num mono">Prime</span>
+      <h3>Cleansed skin</h3>
+      <p>Apply after moisturizer, never before. Hydrated skin holds oil-based notes far longer than dry skin does.</p>
+    </div>
+    <div class="rit-card">
+      <span class="num mono">Place</span>
+      <h3>Pulse points</h3>
+      <p>Wrists, neck, behind the ears, inner elbows — anywhere blood runs close to the surface and warms the oil.</p>
+    </div>
+    <div class="rit-card">
+      <span class="num mono">Hold</span>
+      <h3>Let it dry</h3>
+      <p>Never rub the wrists together. Friction breaks the molecular structure and burns off the top notes early.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="acquire">
+  <span class="eyebrow mono reveal">50ml · Eau de Parfum</span>
+  <h2 class="reveal">Wear the descent.</h2>
+  <a href="#" class="btn btn-primary reveal">Acquire — $185</a>
+</section>
+
+<footer>
+  <div class="nav-mark">Nectar</div>
+  <div class="foot-links">
+    <a href="#">Instagram</a>
+    <a href="#">Journal</a>
+    <a href="#">Contact</a>
+  </div>
+  <span>© 2026 Nectar Perfumerie</span>
+</footer>
+
+<script>
+/* ---------- Scroll reveal ---------- */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in-view'); });
+},{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ---------- Hex field ---------- */
+const hexField = document.getElementById('hexField');
+const hexPositions = [
+  {top:'8%',left:'6%',delay:'0s',scale:.7},
+  {top:'62%',left:'4%',delay:'2s',scale:.5},
+  {top:'20%',left:'16%',delay:'4s',scale:.4},
+  {top:'75%',left:'20%',delay:'1s',scale:.8},
+  {top:'12%',left:'92%',delay:'3s',scale:.6},
+  {top:'70%',left:'88%',delay:'5s',scale:.5},
+];
+hexPositions.forEach(p=>{
+  const d = document.createElement('div');
+  d.className = 'hex';
+  d.style.top = p.top; d.style.left = p.left;
+  d.style.animationDelay = p.delay;
+  d.style.transform = `scale(${p.scale})`;
+  hexField.appendChild(d);
+});
+
+/* ---------- 3D tilt on story panel ---------- */
+const panel = document.querySelector('.story-panel');
+panel.addEventListener('mousemove', (e)=>{
+  const r = panel.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width - 0.5;
+  const y = (e.clientY - r.top) / r.height - 0.5;
+  panel.style.transform = `perspective(900px) rotateY(${x*10}deg) rotateX(${-y*10}deg)`;
+});
+panel.addEventListener('mouseleave', ()=>{ panel.style.transform = 'perspective(900px) rotateY(0) rotateX(0)'; });
+
+/* ---------- Three.js bottle ---------- */
+(function(){
+  const canvas = document.getElementById('bottle-canvas');
+  const container = canvas.parentElement;
+  if(!window.THREE || !container) return;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(38, container.clientWidth/container.clientHeight, .1, 100);
+  camera.position.set(0, .4, 7.2);
+
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(container.clientWidth, container.clientHeight);
+
+  scene.add(new THREE.HemisphereLight(0xffe3b0, 0x140b04, .55));
+  const key = new THREE.PointLight(0xe8b84b, 3.2, 40); key.position.set(4,5,6); scene.add(key);
+  const fill = new THREE.PointLight(0xc9781f, 1.6, 40); fill.position.set(-5,-2,4); scene.add(fill);
+  const rim = new THREE.PointLight(0xffffff, 1.1, 40); rim.position.set(-2,3,-5); scene.add(rim);
+
+  const bottleGroup = new THREE.Group();
+  scene.add(bottleGroup);
+
+  // Glass body
+  const glassPts = [
+    [0.00,0.00],[0.92,0.00],[0.97,0.10],[0.94,1.55],
+    [0.78,1.92],[0.36,2.06],[0.31,2.12],[0.31,2.62],
+    [0.40,2.68],[0.40,2.82],[0.00,2.82]
+  ].map(p=>new THREE.Vector2(p[0],p[1]));
+  const glassGeo = new THREE.LatheGeometry(glassPts, 48);
+  const glassMat = new THREE.MeshPhysicalMaterial({
+    color:0x3a2410, transparent:true, opacity:.28,
+    roughness:.06, metalness:0, clearcoat:1, clearcoatRoughness:.08,
+    side:THREE.DoubleSide
+  });
+  const glass = new THREE.Mesh(glassGeo, glassMat);
+  bottleGroup.add(glass);
+
+  // Liquid
+  const liquidPts = [
+    [0.00,0.00],[0.86,0.00],[0.90,0.10],[0.84,1.28],[0.60,1.5],[0.00,1.5]
+  ].map(p=>new THREE.Vector2(p[0],p[1]));
+  const liquidGeo = new THREE.LatheGeometry(liquidPts, 48);
+  const liquidMat = new THREE.MeshStandardMaterial({
+    color:0xd6862c, transparent:true, opacity:.88,
+    roughness:.25, metalness:0, emissive:0x3a1c06, emissiveIntensity:.35
+  });
+  const liquid = new THREE.Mesh(liquidGeo, liquidMat);
+  liquid.position.y = 0.02;
+  bottleGroup.add(liquid);
+
+  // Cap
+  const capGeo = new THREE.CylinderGeometry(.46,.42,.68,32);
+  const capMat = new THREE.MeshStandardMaterial({color:0x18100a, metalness:.75, roughness:.3});
+  const cap = new THREE.Mesh(capGeo, capMat);
+  cap.position.y = 3.16;
+  bottleGroup.add(cap);
+
+  const capBandGeo = new THREE.TorusGeometry(.44,.03,12,32);
+  const capBandMat = new THREE.MeshStandardMaterial({color:0xe8b84b, metalness:.9, roughness:.25});
+  const capBand = new THREE.Mesh(capBandGeo, capBandMat);
+  capBand.rotation.x = Math.PI/2;
+  capBand.position.y = 2.86;
+  bottleGroup.add(capBand);
+
+  bottleGroup.position.set(0.6, -1.55, 0);
+  bottleGroup.scale.set(1.15,1.15,1.15);
+
+  let targetX = 0, targetY = 0;
+  window.addEventListener('mousemove', (e)=>{
+    targetX = (e.clientX / window.innerWidth - .5) * .6;
+    targetY = (e.clientY / window.innerHeight - .5) * .3;
+  });
+
+  function resize(){
+    const w = container.clientWidth, h = container.clientHeight;
+    camera.aspect = w/h; camera.updateProjectionMatrix();
+    renderer.setSize(w,h);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  let baseRotation = 0;
+  function animate(){
+    requestAnimationFrame(animate);
+    baseRotation += .0022;
+    bottleGroup.rotation.y += ((baseRotation + targetX) - bottleGroup.rotation.y) * .04;
+    bottleGroup.rotation.x += (targetY*.3 - bottleGroup.rotation.x) * .04;
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+</script>
+
+</body>
+</html>
