@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="Explore the complete Nectar fragrance collection for women, men and everyone.">
   <title>Shop All Fragrances — NECTAR</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,17 +29,17 @@
     <section class="shop-hero">
       <p class="eyebrow">The complete product catalog</p>
       <h1>Find the one<br>that feels like <em>you.</em></h1>
-      <div class="hero-meta"><p>Search products by fragrance name or brand. Use a gender filter where the source catalog provides that label.</p><span><strong id="totalCount">1,313</strong> catalog products</span></div>
+      <div class="hero-meta"><p>Search products by fragrance name or brand. Use a gender filter where the source catalog provides that label.</p><span><strong id="totalCount">—</strong> catalog products</span></div>
     </section>
 
     <section class="catalog-shell">
       <div class="filter-rail" id="filterRail">
         <div class="filter-label"><span>01</span> Shop by</div>
         <div class="gender-filters" role="group" aria-label="Filter by gender">
-          <button class="filter active" data-filter="all">All <span id="countAll">0</span></button>
-          <button class="filter" data-filter="women">Women <span id="countWomen">0</span></button>
-          <button class="filter" data-filter="men">Men <span id="countMen">0</span></button>
-          <button class="filter" data-filter="unisex">Unisex <span id="countUnisex">0</span></button>
+          <button class="filter active" data-filter="all">All <span id="countAll">—</span></button>
+          <button class="filter" data-filter="women">Women <span id="countWomen">—</span></button>
+          <button class="filter" data-filter="men">Men <span id="countMen">—</span></button>
+          <button class="filter" data-filter="unisex">Unisex <span id="countUnisex">—</span></button>
         </div>
         <div class="catalog-tools">
           <label class="search"><span>Search</span><input id="searchInput" type="search" placeholder="Brand or fragrance…" autocomplete="off"><i>⌕</i></label>
@@ -48,14 +48,13 @@
       </div>
 
       <p class="catalog-note">Gender filters use only labels found in the source catalog's tags, descriptions or product names. Products without a gender label remain available under All and are marked Not specified.</p>
-      <div class="results-head"><p><strong id="resultCount">0</strong> scents found</p><p>All prices shown in USD</p></div>
+      <div class="results-head"><p><strong id="resultCount">—</strong> scents found</p><p>All prices shown in USD</p></div>
       <div class="product-grid" id="productGrid" aria-live="polite"></div>
       <div class="empty-state" id="emptyState" hidden><span>∅</span><h2>No scent found.</h2><p>Try another name or clear the filters.</p><button id="clearFilters">Clear filters</button></div>
       <div class="load-wrap"><button id="loadMore" class="load-more">Reveal more <span>↓</span></button><p id="progressText"></p></div>
     </section>
   </main>
 
-  <footer><a class="brand" href="index.html">NECTAR<span>PARFUMS</span></a><p>Browse the complete catalog.</p><small>Product names and imagery come from the linked source catalog. The 50 ML and 100 ML prices were provided for this website.</small></footer>
 
   <div class="cart-overlay" id="cartOverlay"></div>
   <aside class="cart-drawer" id="cartDrawer" aria-hidden="true" aria-label="Shopping bag">
@@ -66,7 +65,7 @@
   </aside>
   <div class="toast" id="toast" role="status"><span>✓</span><div><strong>Added to your bag.</strong><small id="toastDetail">50 ML · $7</small></div><button id="closeToast" aria-label="Close">×</button></div>
 
-  <script src="catalog-data.js"></script>
-  <script src="shop.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="module" src="shop.js"></script>
 </body>
 </html>

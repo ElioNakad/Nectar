@@ -1,4 +1,7 @@
+import { getSupabase } from './supabase-client.js';
+
 const q=(s,c=document)=>c.querySelector(s), qa=(s,c=document)=>[...c.querySelectorAll(s)];
+const escapeHtml=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
 
 const glow=q('.cursor-glow');
 window.addEventListener('pointermove',e=>{glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px'});
@@ -53,16 +56,41 @@ function renderCart(){
   q('#whatsappCheckout').href=`https://wa.me/96176441471?text=${encodeURIComponent(orderMessage)}`;
   saveCart();
 }
-qa('.quick-add').forEach(btn=>btn.addEventListener('click',()=>{
+q('#featuredGrid').addEventListener('click',event=>{
+  const btn=event.target.closest('.quick-add');
+  if(!btn)return;
   const card=btn.closest('.product-card'),size=btn.dataset.size,price=Number(btn.dataset.price),key=`${card.dataset.id}-${size}`,existing=cart.find(item=>item.key===key);
   if(existing)existing.qty++;else cart.push({key,id:card.dataset.id,name:card.dataset.name,size,price,image:card.dataset.image,qty:1});
   q('#toastDetail').textContent=`${size} ML · ${money(price)}`;
   renderCart();q('#toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>q('#toast').classList.remove('show'),2600);
-}));
+});
 q('#closeToast').addEventListener('click',()=>q('#toast').classList.remove('show'));
 q('#bagBtn').addEventListener('click',openCart);q('#closeCart').addEventListener('click',closeCart);q('#cartOverlay').addEventListener('click',closeCart);
 q('#whatsappCheckout').addEventListener('click',()=>setTimeout(()=>{cart=[];renderCart();closeCart()},0));
 q('#emptyShop').addEventListener('click',()=>{window.location.href='shop.html'});
 q('#cartItems').addEventListener('click',e=>{const button=e.target.closest('[data-action]');if(!button)return;const item=cart.find(i=>i.key===button.dataset.id);if(!item)return;if(button.dataset.action==='plus')item.qty++;if(button.dataset.action==='minus')item.qty--;if(button.dataset.action==='remove'||item.qty<1)cart=cart.filter(i=>i.key!==item.key);renderCart()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCart()});renderCart();
+async function loadFeaturedProducts(){
+  let supabase;
+  try{supabase=await getSupabase()}catch(error){console.error('Unable to initialize Supabase:',error);return}
+  const [catalogResult,sizeResult,featuredResult]=await Promise.all([
+    supabase.from('perfume_catalog').select('id',{count:'exact',head:true}),
+    supabase.from('sizes').select('id',{count:'exact',head:true}),
+    supabase.from('perfume_catalog').select('*').eq('is_featured',true).order('id',{ascending:true}).limit(6),
+  ]);
+  const error=catalogResult.error||sizeResult.error||featuredResult.error;
+  if(error){console.error('Unable to load live catalog numbers:',error);return}
+  const data=featuredResult.data??[];
+  const updateCount=(selector,value)=>qa(selector).forEach(element=>{element.textContent=Number(value??0).toLocaleString()});
+  updateCount('[data-catalog-count]',catalogResult.count);
+  updateCount('[data-featured-count]',data.length);
+  updateCount('[data-size-count]',sizeResult.count);
+  q('#featuredGrid').innerHTML=data.map(product=>{
+    const productName=`${product.brand_name} ${product.name}`.trim();
+    const sizes=Array.isArray(product.sizes)?product.sizes:[];
+    const options=sizes.map(size=>{const price=size.override_price??size.default_price??size.price;return `<button class="quick-add" data-size="${escapeHtml(size.capacity)}" data-price="${escapeHtml(price)}">${escapeHtml(size.capacity)} ML <b>${money(Number(price))}</b></button>`}).join('');
+    return `<article class="product-card reveal visible" data-id="${escapeHtml(product.id)}" data-name="${escapeHtml(productName)}" data-image="${escapeHtml(product.image_url)}"><div class="product-image"><img loading="lazy" src="${escapeHtml(product.image_url)}" alt="${escapeHtml(productName)} bottle"></div><div class="product-info"><p>${escapeHtml(product.brand_name)}</p><h3>${escapeHtml(product.brand_name)}<br>${escapeHtml(product.name)}</h3><div class="featured-options">${options}</div></div></article>`;
+  }).join('');
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCart()});renderCart();loadFeaturedProducts();
 if(new URLSearchParams(window.location.search).get('bag')==='open')openCart();

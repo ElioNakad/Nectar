@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="Browse the Nectar fragrance catalog.">
   <title>NECTAR — Fragrance Catalog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,9 +34,9 @@
       <div class="hero-copy">
         <p class="eyebrow reveal">Complete fragrance catalog</p>
         <h1 class="reveal">Find your next<br><em>fragrance.</em></h1>
-        <p class="hero-lede reveal">Browse the complete product catalog or start with six featured fragrances below.</p>
+        <p class="hero-lede reveal">Browse the complete product catalog or start with <span data-featured-count>—</span> featured fragrances below.</p>
         <div class="hero-actions reveal">
-          <a class="cta magnetic" href="shop.html">Shop the collection <span>1,313 scents</span></a>
+          <a class="cta magnetic" href="shop.html">Shop the collection <span><b data-catalog-count>—</b> scents</span></a>
           <a class="text-link" href="#shop">View featured <span>↘</span></a>
         </div>
       </div>
@@ -50,9 +50,9 @@
         <h2>Everything in<br><em>one place.</em></h2>
       </div>
       <div class="stat-row reveal">
-        <div><strong>1,313</strong><span>Catalog products</span></div>
-        <div><strong>6</strong><span>Featured below</span></div>
-        <div><strong>2</strong><span>Bottle sizes</span></div>
+        <div><strong data-catalog-count>—</strong><span>Catalog products</span></div>
+        <div><strong data-featured-count>—</strong><span>Featured below</span></div>
+        <div><strong data-size-count>—</strong><span>Bottle sizes</span></div>
       </div>
     </section>
 
@@ -60,11 +60,11 @@
       <div class="collection-head">
         <div><p class="section-no">02 / Featured products</p><h2 class="reveal">Featured<br><em>fragrances.</em></h2></div>
         <div class="collection-intro reveal">
-          <p>Six products from the catalog. Choose a <strong>50 ML bottle for $7</strong> or a <strong>100 ML bottle for $11</strong>.</p>
-          <a class="shop-path" href="shop.html">Browse all 1,313 fragrances <span>→</span></a>
+          <p><span data-featured-count>—</span> featured products from the catalog. Choose from the available bottle sizes and prices.</p>
+          <a class="shop-path" href="shop.html">Browse all <b data-catalog-count>—</b> fragrances <span>→</span></a>
         </div>
       </div>
-      <div class="product-grid">
+      <div class="product-grid" id="featuredGrid">
         <article class="product-card reveal" data-id="aventus" data-name="Our Creation of Creed's Aventus" data-image="https://parfum.sa/cdn/shop/files/Creed_s_Aventus_main_cropped_abc9e15c-59fd-474b-9745-dba47a42f452.jpg?v=1784120135&amp;width=800">
           <div class="product-image"><img loading="lazy" src="https://parfum.sa/cdn/shop/files/Creed_s_Aventus_main_cropped_abc9e15c-59fd-474b-9745-dba47a42f452.jpg?v=1784120135&amp;width=800" alt="Our Creation of Creed's Aventus bottle"></div>
           <div class="product-info"><p>Creed's</p><h3>Creed's<br>Aventus</h3><div class="featured-options"><button class="quick-add" data-size="50" data-price="7">50 ML <b>$7</b></button><button class="quick-add" data-size="100" data-price="11">100 ML <b>$11</b></button></div></div>
@@ -90,12 +90,12 @@
           <div class="product-info"><p>TF's</p><h3>TF's<br>Tuscan Leather</h3><div class="featured-options"><button class="quick-add" data-size="50" data-price="7">50 ML <b>$7</b></button><button class="quick-add" data-size="100" data-price="11">100 ML <b>$11</b></button></div></div>
         </article>
       </div>
-      <p class="price-note">All prices are in USD. Choose 50 ML for $7 or 100 ML for $11.</p>
+      <p class="price-note">All prices are in USD. Select an available bottle size to add it to your bag.</p>
     </section>
 
     <section class="buy-panel">
       <div><p class="eyebrow">Complete catalog</p><h2>Browse every<br>product.</h2></div>
-      <div class="buy-card reveal"><p class="final-kicker">Go beyond the icons</p><h3>Explore every creation</h3><p>Search 1,313 fragrances for women, men and everyone.</p><a class="cta light magnetic" href="shop.html">Open the full shop <span>Explore all</span></a><p class="assurance">Filter by gender · Search by name · Prices in USD</p></div>
+      <div class="buy-card reveal"><p class="final-kicker">Go beyond the icons</p><h3>Explore every creation</h3><p>Search <span data-catalog-count>—</span> fragrances for women, men and everyone.</p><a class="cta light magnetic" href="shop.html">Open the full shop <span>Explore all</span></a><p class="assurance">Filter by gender · Search by name · Prices in USD</p></div>
     </section>
   </main>
 
@@ -114,6 +114,7 @@
     <div class="cart-footer" id="cartFooter"><div><span>Subtotal</span><strong id="cartTotal">$0</strong></div><p>Selected bottle sizes · Prices in USD</p><a class="checkout" id="whatsappCheckout" href="https://wa.me/96176441471" target="_blank" rel="noopener">Checkout via WhatsApp <span>↗</span></a><small>Your order details will open in WhatsApp for you to review and send.</small></div>
   </aside>
   <div class="toast" id="toast" role="status"><span>✓</span><div><strong>Added to your bag.</strong><small id="toastDetail">50 ML · $7</small></div><button id="closeToast" aria-label="Close">×</button></div>
-  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
