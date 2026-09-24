@@ -3,7 +3,7 @@ import { productImageForPosition } from './product-images.js';
 
 const $ = (selector, context = document) => context.querySelector(selector);
 const $$ = (selector, context = document) => [...context.querySelectorAll(selector)];
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 6;
 
 let activeGender = 'all';
 let searchQuery = '';
