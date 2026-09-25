@@ -1,8 +1,0 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "buildCommand": null,
-  "outputDirectory": "oka/outputs/nectar2",
-  "cleanUrls": true,
-  "trailingSlash": false
-}
