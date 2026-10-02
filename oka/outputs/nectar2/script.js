@@ -40,6 +40,7 @@ qa('.accordion').forEach(btn=>btn.addEventListener('click',()=>{
 }));
 
 const CART_KEY='nectar-cart';
+const DELIVERY_FEE=4;
 function loadCart(){try{const saved=JSON.parse(localStorage.getItem(CART_KEY));return Array.isArray(saved)?saved:[]}catch{return[]}}
 let cart=loadCart(),toastTimer;
 const money=n=>`$${n}`;
@@ -47,14 +48,18 @@ function saveCart(){localStorage.setItem(CART_KEY,JSON.stringify(cart))}
 function cartCount(){return cart.reduce((sum,item)=>sum+item.qty,0)}
 function openCart(){q('#cartDrawer').classList.add('open');q('#cartOverlay').classList.add('open');q('#cartDrawer').setAttribute('aria-hidden','false');document.body.classList.add('cart-open')}
 function closeCart(){q('#cartDrawer').classList.remove('open');q('#cartOverlay').classList.remove('open');q('#cartDrawer').setAttribute('aria-hidden','true');document.body.classList.remove('cart-open')}
+function updateCheckoutLink(total){
+  const location=q('#deliveryLocation').value.trim();
+  const orderLines=cart.map((item,index)=>`${index+1}. ${item.name}\nSize: ${item.size} ML\nQuantity: ${item.qty}\nItem total: ${money(item.price*item.qty)}`);
+  const orderMessage=`Hello, I would like to place this perfume order:\n\n${orderLines.join('\n\n')}\n\nLocation: ${location}\nSubtotal: ${money(total)}\nDelivery: ${money(DELIVERY_FEE)}\nTotal: ${money(total+DELIVERY_FEE)}`;
+  q('#whatsappCheckout').href=`https://wa.me/96179195270?text=${encodeURIComponent(orderMessage)}`;
+}
 function renderCart(){
   const count=cartCount(),total=cart.reduce((sum,item)=>sum+item.price*item.qty,0);
-  q('#bagCount').textContent=count;q('#drawerCount').textContent=count;q('#cartTotal').textContent=money(total);
+  q('#bagCount').textContent=count;q('#drawerCount').textContent=count;q('#cartTotal').textContent=money(total);q('#orderTotal').textContent=money(total+DELIVERY_FEE);
   q('#cartEmpty').hidden=cart.length>0;q('#cartFooter').hidden=!cart.length;
   q('#cartItems').innerHTML=cart.map(item=>`<article class="cart-item"><img src="${item.image}" alt=""><div><p>${item.size} ML · Eau de parfum</p><h3>${item.name}</h3><div class="qty"><button data-action="minus" data-id="${item.key}" aria-label="Decrease quantity">−</button><span>${item.qty}</span><button data-action="plus" data-id="${item.key}" aria-label="Increase quantity">+</button></div></div><div><strong>${money(item.price*item.qty)}</strong><button class="remove" data-action="remove" data-id="${item.key}">Remove</button></div></article>`).join('');
-  const orderLines=cart.map((item,index)=>`${index+1}. ${item.name}\nSize: ${item.size} ML\nQuantity: ${item.qty}\nItem total: ${money(item.price*item.qty)}`);
-  const orderMessage=`Hello, I would like to place this perfume order:\n\n${orderLines.join('\n\n')}\n\nSubtotal: ${money(total)}`;
-  q('#whatsappCheckout').href=`https://wa.me/96171646308?text=${encodeURIComponent(orderMessage)}`;
+  updateCheckoutLink(total);
   saveCart();
 }
 q('#featuredGrid').addEventListener('click',event=>{
@@ -67,7 +72,8 @@ q('#featuredGrid').addEventListener('click',event=>{
 });
 q('#closeToast').addEventListener('click',()=>q('#toast').classList.remove('show'));
 q('#bagBtn').addEventListener('click',openCart);q('#closeCart').addEventListener('click',closeCart);q('#cartOverlay').addEventListener('click',closeCart);
-q('#whatsappCheckout').addEventListener('click',()=>setTimeout(()=>{cart=[];renderCart();closeCart()},0));
+q('#deliveryLocation').addEventListener('input',()=>{q('#deliveryLocation').removeAttribute('aria-invalid');q('#locationError').textContent='';updateCheckoutLink(cart.reduce((sum,item)=>sum+item.price*item.qty,0))});
+q('#whatsappCheckout').addEventListener('click',event=>{const location=q('#deliveryLocation');if(!location.value.trim()){event.preventDefault();location.setAttribute('aria-invalid','true');q('#locationError').textContent='Please enter your delivery location.';location.focus();return}setTimeout(()=>{cart=[];renderCart();closeCart()},0)});
 q('#emptyShop').addEventListener('click',()=>{window.location.href='shop.html'});
 q('#cartItems').addEventListener('click',e=>{const button=e.target.closest('[data-action]');if(!button)return;const item=cart.find(i=>i.key===button.dataset.id);if(!item)return;if(button.dataset.action==='plus')item.qty++;if(button.dataset.action==='minus')item.qty--;if(button.dataset.action==='remove'||item.qty<1)cart=cart.filter(i=>i.key!==item.key);renderCart()});
 async function loadFeaturedProducts(){

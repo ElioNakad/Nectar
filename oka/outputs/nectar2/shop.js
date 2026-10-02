@@ -198,6 +198,7 @@ async function loadFilterCounts() {
 }
 
 const CART_KEY = 'nectar-cart';
+const DELIVERY_FEE = 4;
 
 function loadCart() {
   try {
@@ -233,19 +234,25 @@ function closeCart() {
   document.body.classList.remove('cart-open');
 }
 
+function updateCheckoutLink(total) {
+  const location = $('#deliveryLocation').value.trim();
+  const orderLines = cart.map((item, index) => `${index + 1}. ${item.name}\nSize: ${item.size} ML\nQuantity: ${item.qty}\nItem total: ${formatMoney(item.price * item.qty)}`);
+  const orderMessage = `Hello, I would like to place this perfume order:\n\n${orderLines.join('\n\n')}\n\nLocation: ${location}\nSubtotal: ${formatMoney(total)}\nDelivery: ${formatMoney(DELIVERY_FEE)}\nTotal: ${formatMoney(total + DELIVERY_FEE)}`;
+  $('#whatsappCheckout').href = `https://wa.me/96179195270?text=${encodeURIComponent(orderMessage)}`;
+}
+
 function renderCart() {
   const count = cartCount();
   const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   $('#bagCount').textContent = count;
   $('#drawerCount').textContent = count;
   $('#cartTotal').textContent = formatMoney(total);
+  $('#orderTotal').textContent = formatMoney(total + DELIVERY_FEE);
   $('#cartEmpty').hidden = cart.length > 0;
   $('#cartFooter').hidden = !cart.length;
   $('#cartItems').innerHTML = cart.map((item) => `<article class="cart-item"><img src="${escapeHtml(item.image)}" alt=""><div><p>${escapeHtml(item.size)} ML · Eau de parfum</p><h3>${escapeHtml(item.name)}</h3><div class="qty"><button data-action="minus" data-id="${escapeHtml(item.key)}" aria-label="Decrease quantity">−</button><span>${item.qty}</span><button data-action="plus" data-id="${escapeHtml(item.key)}" aria-label="Increase quantity">+</button></div></div><div><strong>${formatMoney(item.price * item.qty)}</strong><button class="remove" data-action="remove" data-id="${escapeHtml(item.key)}">Remove</button></div></article>`).join('');
 
-  const orderLines = cart.map((item, index) => `${index + 1}. ${item.name}\nSize: ${item.size} ML\nQuantity: ${item.qty}\nItem total: ${formatMoney(item.price * item.qty)}`);
-  const orderMessage = `Hello, I would like to place this perfume order:\n\n${orderLines.join('\n\n')}\n\nSubtotal: ${formatMoney(total)}`;
-  $('#whatsappCheckout').href = `https://wa.me/96171646308?text=${encodeURIComponent(orderMessage)}`;
+  updateCheckoutLink(total);
   saveCart();
 }
 
@@ -342,11 +349,26 @@ $('#bagBtn').addEventListener('click', openCart);
 $('#closeCart').addEventListener('click', closeCart);
 $('#cartOverlay').addEventListener('click', closeCart);
 $('#closeToast').addEventListener('click', () => $('#toast').classList.remove('show'));
-$('#whatsappCheckout').addEventListener('click', () => setTimeout(() => {
-  cart = [];
-  renderCart();
-  closeCart();
-}, 0));
+$('#deliveryLocation').addEventListener('input', () => {
+  $('#deliveryLocation').removeAttribute('aria-invalid');
+  $('#locationError').textContent = '';
+  updateCheckoutLink(cart.reduce((sum, item) => sum + item.price * item.qty, 0));
+});
+$('#whatsappCheckout').addEventListener('click', (event) => {
+  const location = $('#deliveryLocation');
+  if (!location.value.trim()) {
+    event.preventDefault();
+    location.setAttribute('aria-invalid', 'true');
+    $('#locationError').textContent = 'Please enter your delivery location.';
+    location.focus();
+    return;
+  }
+  setTimeout(() => {
+    cart = [];
+    renderCart();
+    closeCart();
+  }, 0);
+});
 $('#emptyShop').addEventListener('click', () => {
   closeCart();
   $('#filterRail').scrollIntoView({ behavior: 'smooth' });
