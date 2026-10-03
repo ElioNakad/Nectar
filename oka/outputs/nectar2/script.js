@@ -50,7 +50,7 @@ function openCart(){q('#cartDrawer').classList.add('open');q('#cartOverlay').cla
 function closeCart(){q('#cartDrawer').classList.remove('open');q('#cartOverlay').classList.remove('open');q('#cartDrawer').setAttribute('aria-hidden','true');document.body.classList.remove('cart-open')}
 function updateCheckoutLink(total){
   const location=q('#deliveryLocation').value.trim();
-  const orderLines=cart.map((item,index)=>`${index+1}. ${item.name}\nSize: ${item.size} ML\nQuantity: ${item.qty}\nItem total: ${money(item.price*item.qty)}`);
+  const orderLines=cart.map((item,index)=>`${index+1}. ${item.name}\nSize: ${item.size} ML\nEdition: ${item.tier||'Regular'}\nQuantity: ${item.qty}\nItem total: ${money(item.price*item.qty)}`);
   const orderMessage=`Hello, I would like to place this perfume order:\n\n${orderLines.join('\n\n')}\n\nLocation: ${location}\nSubtotal: ${money(total)}\nDelivery: ${money(DELIVERY_FEE)}\nTotal: ${money(total+DELIVERY_FEE)}`;
   q('#whatsappCheckout').href=`https://wa.me/96179195270?text=${encodeURIComponent(orderMessage)}`;
 }
@@ -58,16 +58,16 @@ function renderCart(){
   const count=cartCount(),total=cart.reduce((sum,item)=>sum+item.price*item.qty,0);
   q('#bagCount').textContent=count;q('#drawerCount').textContent=count;q('#cartTotal').textContent=money(total);q('#orderTotal').textContent=money(total+DELIVERY_FEE);
   q('#cartEmpty').hidden=cart.length>0;q('#cartFooter').hidden=!cart.length;
-  q('#cartItems').innerHTML=cart.map(item=>`<article class="cart-item"><img src="${item.image}" alt=""><div><p>${item.size} ML · Eau de parfum</p><h3>${item.name}</h3><div class="qty"><button data-action="minus" data-id="${item.key}" aria-label="Decrease quantity">−</button><span>${item.qty}</span><button data-action="plus" data-id="${item.key}" aria-label="Increase quantity">+</button></div></div><div><strong>${money(item.price*item.qty)}</strong><button class="remove" data-action="remove" data-id="${item.key}">Remove</button></div></article>`).join('');
+  q('#cartItems').innerHTML=cart.map(item=>`<article class="cart-item"><img src="${item.image}" alt=""><div><p>${item.size} ML · <span class="cart-tier ${item.tier==='VIP'?'vip':''}">${item.tier||'Regular'}</span></p><h3>${item.name}</h3><div class="qty"><button data-action="minus" data-id="${item.key}" aria-label="Decrease quantity">−</button><span>${item.qty}</span><button data-action="plus" data-id="${item.key}" aria-label="Increase quantity">+</button></div></div><div><strong>${money(item.price*item.qty)}</strong><button class="remove" data-action="remove" data-id="${item.key}">Remove</button></div></article>`).join('');
   updateCheckoutLink(total);
   saveCart();
 }
 q('#featuredGrid').addEventListener('click',event=>{
   const btn=event.target.closest('.quick-add');
   if(!btn)return;
-  const card=btn.closest('.product-card'),size=btn.dataset.size,price=Number(btn.dataset.price),key=`${card.dataset.id}-${size}`,existing=cart.find(item=>item.key===key);
-  if(existing)existing.qty++;else cart.push({key,id:card.dataset.id,name:card.dataset.name,size,price,image:card.dataset.image,qty:1});
-  q('#toastDetail').textContent=`${size} ML · ${money(price)}`;
+  const card=btn.closest('.product-card'),size=btn.dataset.size,tier=btn.dataset.tier||'Regular',price=Number(btn.dataset.price),key=`${card.dataset.id}-${size}-${tier.toLowerCase()}`,existing=cart.find(item=>item.key===key);
+  if(existing)existing.qty++;else cart.push({key,id:card.dataset.id,name:card.dataset.name,size,tier,price,image:card.dataset.image,qty:1});
+  q('#toastDetail').textContent=`${size} ML · ${tier} · ${money(price)}`;
   renderCart();q('#toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>q('#toast').classList.remove('show'),2600);
 });
 q('#closeToast').addEventListener('click',()=>q('#toast').classList.remove('show'));
@@ -95,7 +95,7 @@ async function loadFeaturedProducts(){
     const productName=`${product.brand_name} ${product.name}`.trim();
     const productImage=productImageForPosition(index,10);
     const sizes=Array.isArray(product.sizes)?product.sizes:[];
-    const options=sizes.map(size=>{const price=size.override_price??size.default_price??size.price;return `<button class="quick-add" data-size="${escapeHtml(size.capacity)}" data-price="${escapeHtml(price)}">${escapeHtml(size.capacity)} ML <b>${money(Number(price))}</b></button>`}).join('');
+    const options=sizes.map(size=>{const price=size.override_price??size.default_price??size.price;const hasVip=size.vip_enabled===true&&size.vip_price!==null;return `<div class="featured-size ${hasVip?'has-vip':''}"><span>${escapeHtml(size.capacity)} ML</span><div><button class="quick-add" data-size="${escapeHtml(size.capacity)}" data-tier="Regular" data-price="${escapeHtml(price)}"><small>Regular</small><b>${money(Number(price))}</b></button>${hasVip?`<button class="quick-add vip" data-size="${escapeHtml(size.capacity)}" data-tier="VIP" data-price="${escapeHtml(size.vip_price)}"><small>VIP</small><b>${money(Number(size.vip_price))}</b></button>`:''}</div></div>`}).join('');
     return `<article class="product-card reveal visible" data-id="${escapeHtml(product.id)}" data-name="${escapeHtml(productName)}" data-image="${escapeHtml(productImage)}"><div class="product-image"><img loading="lazy" src="${escapeHtml(productImage)}" alt="${escapeHtml(productName)} bottle"></div><div class="product-info"><p>${escapeHtml(product.brand_name)}</p><h3>${escapeHtml(product.brand_name)}<br>${escapeHtml(product.name)}</h3><div class="featured-options">${options}</div></div></article>`;
   }).join('');
 }

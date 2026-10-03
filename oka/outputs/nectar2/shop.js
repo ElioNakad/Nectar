@@ -77,12 +77,36 @@ function productCard(product, position) {
   const productImage = productImageForPosition(position, PAGE_SIZE);
   const sizeButtons = sizes.map((size, index) => {
     const price = size.override_price ?? size.default_price ?? size.price;
-    return `<button class="size-option${index === 0 ? ' selected' : ''}" data-size="${escapeHtml(size.capacity)}" data-price="${escapeHtml(price)}" aria-pressed="${index === 0}"><span>${escapeHtml(size.capacity)} ML</span><strong>${formatMoney(price)}</strong></button>`;
+    const hasVip = size.vip_enabled === true && size.vip_price !== null;
+    return `<button class="size-option${index === 0 ? ' selected' : ''}" data-size="${escapeHtml(size.capacity)}" data-price="${escapeHtml(price)}" data-vip-enabled="${hasVip}" data-vip-price="${hasVip ? escapeHtml(size.vip_price) : ''}" aria-pressed="${index === 0}"><span class="size-label"><b>${escapeHtml(size.capacity)} ML</b>${hasVip ? '<small>VIP available</small>' : ''}</span><strong>${formatMoney(price)}</strong></button>`;
   }).join('');
+  const firstSize = sizes[0];
+  const firstRegularPrice = firstSize?.override_price ?? firstSize?.default_price ?? firstSize?.price;
+  const firstHasVip = firstSize?.vip_enabled === true && firstSize?.vip_price !== null;
+  const purchaseTier = sizeButtons ? `<div class="purchase-tier" ${firstHasVip ? '' : 'hidden'}><div class="tier-heading"><span>Choose your edition</span><small>VIP is available for this size</small></div><div class="tier-options" role="group" aria-label="Choose regular or VIP edition"><button type="button" class="tier-option selected" data-tier="Regular" data-price="${escapeHtml(firstRegularPrice)}" aria-pressed="true"><span>Regular</span><strong>${formatMoney(firstRegularPrice)}</strong></button><button type="button" class="tier-option vip" data-tier="VIP" data-price="${firstHasVip ? escapeHtml(firstSize.vip_price) : ''}" aria-pressed="false"><span><i>VIP</i> Edition</span><strong>${firstHasVip ? formatMoney(firstSize.vip_price) : ''}</strong></button></div></div>` : '';
   const genderLabel = product.sex === 'unspecified' ? 'Not specified' : product.sex;
   const name = displayName(product);
 
-  return `<article class="product-card" data-gender="${escapeHtml(product.sex)}" data-product-id="${escapeHtml(product.id)}" data-product-image="${escapeHtml(productImage)}"><div class="product-image"><span class="gender-tag">${escapeHtml(genderLabel)}</span><img loading="lazy" src="${escapeHtml(productImage)}" alt="${escapeHtml(name)} bottle"></div><div class="product-info"><div class="product-vendor">${escapeHtml(product.brand_name)}</div><h2>${escapeHtml(product.name)}</h2><div class="size-options" role="group" aria-label="Choose bottle size">${sizeButtons || '<span>Currently unavailable</span>'}</div><button class="add-to-bag" type="button"${sizeButtons ? '' : ' disabled'}>Add selected size to bag <span>+</span></button></div></article>`;
+  return `<article class="product-card" data-gender="${escapeHtml(product.sex)}" data-product-id="${escapeHtml(product.id)}" data-product-image="${escapeHtml(productImage)}"><div class="product-image"><span class="gender-tag">${escapeHtml(genderLabel)}</span><img loading="lazy" src="${escapeHtml(productImage)}" alt="${escapeHtml(name)} bottle"></div><div class="product-info"><div class="product-vendor">${escapeHtml(product.brand_name)}</div><h2>${escapeHtml(product.name)}</h2><div class="size-options" role="group" aria-label="Choose bottle size">${sizeButtons || '<span>Currently unavailable</span>'}</div>${purchaseTier}<button class="add-to-bag" type="button"${sizeButtons ? '' : ' disabled'}>Add selection to bag <span>+</span></button></div></article>`;
+}
+
+function syncPurchaseTier(card, sizeOption) {
+  const tierPanel = $('.purchase-tier', card);
+  if (!tierPanel) return;
+  const hasVip = sizeOption.dataset.vipEnabled === 'true' && sizeOption.dataset.vipPrice !== '';
+  const tierButtons = $$('.tier-option', tierPanel);
+  const regularButton = tierButtons.find((button) => button.dataset.tier === 'Regular');
+  const vipButton = tierButtons.find((button) => button.dataset.tier === 'VIP');
+  regularButton.dataset.price = sizeOption.dataset.price;
+  $('strong', regularButton).textContent = formatMoney(sizeOption.dataset.price);
+  vipButton.dataset.price = hasVip ? sizeOption.dataset.vipPrice : '';
+  $('strong', vipButton).textContent = hasVip ? formatMoney(sizeOption.dataset.vipPrice) : '';
+  tierPanel.hidden = !hasVip;
+  tierButtons.forEach((button) => {
+    const selected = button === regularButton;
+    button.classList.toggle('selected', selected);
+    button.setAttribute('aria-pressed', String(selected));
+  });
 }
 
 function showCatalogMessage(title, message) {
@@ -236,7 +260,7 @@ function closeCart() {
 
 function updateCheckoutLink(total) {
   const location = $('#deliveryLocation').value.trim();
-  const orderLines = cart.map((item, index) => `${index + 1}. ${item.name}\nSize: ${item.size} ML\nQuantity: ${item.qty}\nItem total: ${formatMoney(item.price * item.qty)}`);
+  const orderLines = cart.map((item, index) => `${index + 1}. ${item.name}\nSize: ${item.size} ML\nEdition: ${item.tier || 'Regular'}\nQuantity: ${item.qty}\nItem total: ${formatMoney(item.price * item.qty)}`);
   const orderMessage = `Hello, I would like to place this perfume order:\n\n${orderLines.join('\n\n')}\n\nLocation: ${location}\nSubtotal: ${formatMoney(total)}\nDelivery: ${formatMoney(DELIVERY_FEE)}\nTotal: ${formatMoney(total + DELIVERY_FEE)}`;
   $('#whatsappCheckout').href = `https://wa.me/96179195270?text=${encodeURIComponent(orderMessage)}`;
 }
@@ -250,14 +274,14 @@ function renderCart() {
   $('#orderTotal').textContent = formatMoney(total + DELIVERY_FEE);
   $('#cartEmpty').hidden = cart.length > 0;
   $('#cartFooter').hidden = !cart.length;
-  $('#cartItems').innerHTML = cart.map((item) => `<article class="cart-item"><img src="${escapeHtml(item.image)}" alt=""><div><p>${escapeHtml(item.size)} ML · Eau de parfum</p><h3>${escapeHtml(item.name)}</h3><div class="qty"><button data-action="minus" data-id="${escapeHtml(item.key)}" aria-label="Decrease quantity">−</button><span>${item.qty}</span><button data-action="plus" data-id="${escapeHtml(item.key)}" aria-label="Increase quantity">+</button></div></div><div><strong>${formatMoney(item.price * item.qty)}</strong><button class="remove" data-action="remove" data-id="${escapeHtml(item.key)}">Remove</button></div></article>`).join('');
+  $('#cartItems').innerHTML = cart.map((item) => `<article class="cart-item"><img src="${escapeHtml(item.image)}" alt=""><div><p>${escapeHtml(item.size)} ML · <span class="cart-tier ${item.tier === 'VIP' ? 'vip' : ''}">${escapeHtml(item.tier || 'Regular')}</span></p><h3>${escapeHtml(item.name)}</h3><div class="qty"><button data-action="minus" data-id="${escapeHtml(item.key)}" aria-label="Decrease quantity">−</button><span>${item.qty}</span><button data-action="plus" data-id="${escapeHtml(item.key)}" aria-label="Increase quantity">+</button></div></div><div><strong>${formatMoney(item.price * item.qty)}</strong><button class="remove" data-action="remove" data-id="${escapeHtml(item.key)}">Remove</button></div></article>`).join('');
 
   updateCheckoutLink(total);
   saveCart();
 }
 
-function addToCart(product, size, price, image) {
-  const key = `${product.id}-${size}`;
+function addToCart(product, size, tier, price, image) {
+  const key = `${product.id}-${size}-${tier.toLowerCase()}`;
   const existing = cart.find((item) => item.key === key);
   if (existing) {
     existing.qty += 1;
@@ -267,13 +291,14 @@ function addToCart(product, size, price, image) {
       id: product.id,
       name: displayName(product),
       size,
+      tier,
       price,
       image,
       qty: 1,
     });
   }
   renderCart();
-  $('#toastDetail').textContent = `${size} ML · ${formatMoney(price)}`;
+  $('#toastDetail').textContent = `${size} ML · ${tier} · ${formatMoney(price)}`;
   $('#toast').classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => $('#toast').classList.remove('show'), 2400);
@@ -310,6 +335,18 @@ $('#productGrid').addEventListener('click', (event) => {
       button.classList.toggle('selected', selected);
       button.setAttribute('aria-pressed', String(selected));
     });
+    syncPurchaseTier(card, option);
+    return;
+  }
+
+  const tierOption = event.target.closest('.tier-option');
+  if (tierOption) {
+    const panel = tierOption.closest('.purchase-tier');
+    $$('.tier-option', panel).forEach((button) => {
+      const selected = button === tierOption;
+      button.classList.toggle('selected', selected);
+      button.setAttribute('aria-pressed', String(selected));
+    });
     return;
   }
 
@@ -319,13 +356,16 @@ $('#productGrid').addEventListener('click', (event) => {
   const product = products.find((item) => String(item.id) === card.dataset.productId);
   const selected = card.querySelector('.size-option.selected');
   if (!product || !selected) return;
+  const selectedTier = card.querySelector('.purchase-tier:not([hidden]) .tier-option.selected');
+  const tier = selectedTier?.dataset.tier || 'Regular';
+  const price = Number(selectedTier?.dataset.price || selected.dataset.price);
 
-  addToCart(product, selected.dataset.size, Number(selected.dataset.price), card.dataset.productImage);
+  addToCart(product, selected.dataset.size, tier, price, card.dataset.productImage);
   addButton.classList.add('added');
   addButton.firstChild.textContent = 'Added to bag ';
   setTimeout(() => {
     addButton.classList.remove('added');
-    addButton.firstChild.textContent = 'Add selected size to bag ';
+    addButton.firstChild.textContent = 'Add selection to bag ';
   }, 1200);
 });
 

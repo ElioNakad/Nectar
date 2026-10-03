@@ -83,3 +83,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}body{min-width:280px}ma
 }
 
 @media(hover:none){.product-card:hover .product-image img{transform:none}.quick-add:hover,.shop-path:hover{background:initial;color:inherit}.quick-add:active{background:var(--cream);color:var(--ink)}}
+
+/* Featured-card regular / VIP choices */
+.featured-options{grid-template-columns:1fr!important;gap:9px!important}.featured-size{display:grid!important;grid-template-columns:54px minmax(0,1fr);gap:8px!important;align-items:stretch!important;padding-top:9px;border-top:1px solid var(--line)}.featured-size>span{display:flex;align-items:center;color:rgba(255,255,255,.62)!important;font-size:8px;font-weight:700;letter-spacing:.1em}.featured-size>div{display:grid!important;grid-template-columns:1fr;gap:6px!important}.featured-size.has-vip>div{grid-template-columns:1fr 1fr}.featured-size .quick-add{min-width:0;margin:0;padding:10px 9px;display:grid;gap:4px}.featured-size .quick-add small{font-size:7px;letter-spacing:.08em;text-transform:uppercase;opacity:.55}.featured-size .quick-add b{font-size:17px!important}.featured-size .quick-add.vip{border-color:rgba(209,154,74,.68);background:rgba(209,154,74,.08)}.featured-size .quick-add.vip small{color:var(--gold);opacity:1;font-weight:800}.featured-size .quick-add.vip:hover{background:var(--gold);border-color:var(--gold);color:var(--ink)}.cart-tier.vip{color:#8b5c1f;font-weight:800}
+@media(max-width:420px){.featured-size{grid-template-columns:48px minmax(0,1fr)}.featured-size.has-vip>div{grid-template-columns:1fr 1fr}}
