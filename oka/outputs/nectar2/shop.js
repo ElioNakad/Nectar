@@ -4,6 +4,7 @@ import { productImageForPosition } from './product-images.js';
 const $ = (selector, context = document) => context.querySelector(selector);
 const $$ = (selector, context = document) => [...context.querySelectorAll(selector)];
 const PAGE_SIZE = 6;
+const VIP_PACKAGE_IMAGE = 'assets/nectar-vip-package.jpeg';
 
 let activeGender = 'all';
 let searchQuery = '';
@@ -87,7 +88,16 @@ function productCard(product, position) {
   const genderLabel = product.sex === 'unspecified' ? 'Not specified' : product.sex;
   const name = displayName(product);
 
-  return `<article class="product-card" data-gender="${escapeHtml(product.sex)}" data-product-id="${escapeHtml(product.id)}" data-product-image="${escapeHtml(productImage)}"><div class="product-image"><span class="gender-tag">${escapeHtml(genderLabel)}</span><img loading="lazy" src="${escapeHtml(productImage)}" alt="${escapeHtml(name)} bottle"></div><div class="product-info"><div class="product-vendor">${escapeHtml(product.brand_name)}</div><h2>${escapeHtml(product.name)}</h2><div class="size-options" role="group" aria-label="Choose bottle size">${sizeButtons || '<span>Currently unavailable</span>'}</div>${purchaseTier}<button class="add-to-bag" type="button"${sizeButtons ? '' : ' disabled'}>Add selection to bag <span>+</span></button></div></article>`;
+  return `<article class="product-card" data-gender="${escapeHtml(product.sex)}" data-product-id="${escapeHtml(product.id)}" data-product-image="${escapeHtml(productImage)}"><div class="product-image"><span class="gender-tag">${escapeHtml(genderLabel)}</span><div class="product-image-track" tabindex="0" aria-label="Images for ${escapeHtml(name)}"><div class="product-image-slide"><img loading="lazy" src="${escapeHtml(productImage)}" alt="${escapeHtml(name)} bottle"><span class="image-edition">Regular</span></div><div class="product-image-slide"><img loading="lazy" src="assets/nectar-vip-package.jpeg" alt="Nectar VIP presentation package for ${escapeHtml(name)}"><span class="image-edition vip">VIP package</span></div></div></div><div class="product-info"><div class="product-vendor">${escapeHtml(product.brand_name)}</div><h2>${escapeHtml(product.name)}</h2><div class="size-options" role="group" aria-label="Choose bottle size">${sizeButtons || '<span>Currently unavailable</span>'}</div>${purchaseTier}<button class="add-to-bag" type="button"${sizeButtons ? '' : ' disabled'}>Add selection to bag <span>+</span></button></div></article>`;
+}
+
+function showEditionImage(card, tier) {
+  const track = $('.product-image-track', card);
+  if (!track) return;
+  track.scrollTo({
+    left: tier === 'VIP' ? track.clientWidth : 0,
+    behavior: 'smooth',
+  });
 }
 
 function syncPurchaseTier(card, sizeOption) {
@@ -274,7 +284,7 @@ function renderCart() {
   $('#orderTotal').textContent = formatMoney(total + DELIVERY_FEE);
   $('#cartEmpty').hidden = cart.length > 0;
   $('#cartFooter').hidden = !cart.length;
-  $('#cartItems').innerHTML = cart.map((item) => `<article class="cart-item"><img src="${escapeHtml(item.image)}" alt=""><div><p>${escapeHtml(item.size)} ML · <span class="cart-tier ${item.tier === 'VIP' ? 'vip' : ''}">${escapeHtml(item.tier || 'Regular')}</span></p><h3>${escapeHtml(item.name)}</h3><div class="qty"><button data-action="minus" data-id="${escapeHtml(item.key)}" aria-label="Decrease quantity">−</button><span>${item.qty}</span><button data-action="plus" data-id="${escapeHtml(item.key)}" aria-label="Increase quantity">+</button></div></div><div><strong>${formatMoney(item.price * item.qty)}</strong><button class="remove" data-action="remove" data-id="${escapeHtml(item.key)}">Remove</button></div></article>`).join('');
+  $('#cartItems').innerHTML = cart.map((item) => `<article class="cart-item"><img src="${escapeHtml(item.tier === 'VIP' ? VIP_PACKAGE_IMAGE : item.image)}" alt=""><div><p>${escapeHtml(item.size)} ML · <span class="cart-tier ${item.tier === 'VIP' ? 'vip' : ''}">${escapeHtml(item.tier || 'Regular')}</span></p><h3>${escapeHtml(item.name)}</h3><div class="qty"><button data-action="minus" data-id="${escapeHtml(item.key)}" aria-label="Decrease quantity">−</button><span>${item.qty}</span><button data-action="plus" data-id="${escapeHtml(item.key)}" aria-label="Increase quantity">+</button></div></div><div><strong>${formatMoney(item.price * item.qty)}</strong><button class="remove" data-action="remove" data-id="${escapeHtml(item.key)}">Remove</button></div></article>`).join('');
 
   updateCheckoutLink(total);
   saveCart();
@@ -336,6 +346,7 @@ $('#productGrid').addEventListener('click', (event) => {
       button.setAttribute('aria-pressed', String(selected));
     });
     syncPurchaseTier(card, option);
+    showEditionImage(card, 'Regular');
     return;
   }
 
@@ -347,6 +358,7 @@ $('#productGrid').addEventListener('click', (event) => {
       button.classList.toggle('selected', selected);
       button.setAttribute('aria-pressed', String(selected));
     });
+    showEditionImage(panel.closest('.product-card'), tierOption.dataset.tier);
     return;
   }
 
@@ -360,7 +372,7 @@ $('#productGrid').addEventListener('click', (event) => {
   const tier = selectedTier?.dataset.tier || 'Regular';
   const price = Number(selectedTier?.dataset.price || selected.dataset.price);
 
-  addToCart(product, selected.dataset.size, tier, price, card.dataset.productImage);
+  addToCart(product, selected.dataset.size, tier, price, tier === 'VIP' ? VIP_PACKAGE_IMAGE : card.dataset.productImage);
   addButton.classList.add('added');
   addButton.firstChild.textContent = 'Added to bag ';
   setTimeout(() => {
