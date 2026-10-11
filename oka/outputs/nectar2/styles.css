@@ -97,6 +97,12 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}body{min-width:280px}ma
 .product-card:hover .product-image-track img{transform:none}
 @media(max-width:420px){.featured-size{grid-template-columns:48px minmax(0,1fr)}.featured-size.has-vip>div{grid-template-columns:1fr 1fr}}
 
+/* Featured product gender corner ribbons */
+.gender-tag{position:absolute;z-index:4;top:18px;left:-38px;width:124px;padding:8px 0;background:rgba(12,8,10,.88);color:var(--cream);text-align:center;text-transform:uppercase;letter-spacing:.17em;font-size:7px;line-height:1;box-shadow:0 3px 12px rgba(12,8,10,.28);transform:rotate(-45deg);transform-origin:center;pointer-events:none}
+.product-card[data-gender="women"] .gender-tag{background:#b95078;color:#fff}
+.product-card[data-gender="men"] .gender-tag{background:#3f6f9f;color:#fff}
+.product-card[data-gender="unisex"] .gender-tag{background:#73559b;color:#fff;font-weight:600}
+
 /* VIP package editorial feature */
 .manifesto{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:2.4vw;align-items:start}
 .manifesto>.section-no{grid-column:1/-1}
