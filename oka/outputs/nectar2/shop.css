@@ -96,7 +96,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}body{min-width:280px}ma
 @media(hover:none){.product-card:hover img{transform:none;filter:none}.size-option:hover{background:transparent;color:var(--cream);border-color:var(--line)}.size-option.selected{background:var(--cream);color:var(--ink);border-color:var(--cream)}.add-to-bag:hover{background:var(--cream);border-color:var(--cream)}}
 
 /* Two-image product galleries */
-.product-image-track{display:flex;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-inline:contain;touch-action:pan-x}
+.product-image-track{display:flex;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior:auto;touch-action:auto}
 .product-image-track::-webkit-scrollbar{display:none}
 .product-image-slide{position:relative;flex:0 0 100%;width:100%;height:100%;scroll-snap-align:start;scroll-snap-stop:always}
 .product-image-track img{width:100%;height:100%;object-fit:cover}
