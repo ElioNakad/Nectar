@@ -88,7 +88,16 @@ function productCard(product, position) {
   const genderLabel = product.sex === 'unspecified' ? 'Not specified' : product.sex;
   const name = displayName(product);
 
-  return `<article class="product-card" data-gender="${escapeHtml(product.sex)}" data-product-id="${escapeHtml(product.id)}" data-product-image="${escapeHtml(productImage)}"><div class="product-image"><span class="gender-tag">${escapeHtml(genderLabel)}</span><div class="product-image-track" tabindex="0" aria-label="Images for ${escapeHtml(name)}"><div class="product-image-slide"><img loading="lazy" src="${escapeHtml(productImage)}" alt="${escapeHtml(name)} bottle"><span class="image-edition">Regular</span></div><div class="product-image-slide"><img loading="lazy" src="assets/nectar-vip-package.jpeg" alt="Nectar VIP presentation package for ${escapeHtml(name)}"><span class="image-edition vip">VIP package</span></div></div></div><div class="product-info"><div class="product-vendor">${escapeHtml(product.brand_name)}</div><h2>${escapeHtml(product.name)}</h2><div class="size-options" role="group" aria-label="Choose bottle size">${sizeButtons || '<span>Currently unavailable</span>'}</div>${purchaseTier}<button class="add-to-bag" type="button"${sizeButtons ? '' : ' disabled'}>Add selection to bag <span>+</span></button></div></article>`;
+  return `<article class="product-card" data-gender="${escapeHtml(product.sex)}" data-product-id="${escapeHtml(product.id)}" data-product-image="${escapeHtml(productImage)}"><div class="product-image"><span class="gender-tag">${escapeHtml(genderLabel)}</span><div class="product-image-track" tabindex="0" aria-label="Images for ${escapeHtml(name)}"><div class="product-image-slide"><img loading="lazy" src="${escapeHtml(productImage)}" alt="${escapeHtml(name)} bottle"><span class="image-edition">Regular</span></div><div class="product-image-slide"><img loading="lazy" src="assets/nectar-vip-package.jpeg" alt="Nectar VIP presentation package for ${escapeHtml(name)}"><span class="image-edition vip">VIP package</span></div></div><div class="image-dots" aria-label="Choose product image"><button class="image-dot active" type="button" data-image-index="0" aria-label="Show regular product image" aria-current="true"></button><button class="image-dot" type="button" data-image-index="1" aria-label="Show VIP package image" aria-current="false"></button></div></div><div class="product-info"><div class="product-vendor">${escapeHtml(product.brand_name)}</div><h2>${escapeHtml(product.name)}</h2><div class="size-options" role="group" aria-label="Choose bottle size">${sizeButtons || '<span>Currently unavailable</span>'}</div>${purchaseTier}<button class="add-to-bag" type="button"${sizeButtons ? '' : ' disabled'}>Add selection to bag <span>+</span></button></div></article>`;
+}
+
+function syncGalleryDots(track) {
+  const index = track.clientWidth ? Math.round(track.scrollLeft / track.clientWidth) : 0;
+  $$('.image-dot', track.parentElement).forEach((dot, dotIndex) => {
+    const active = dotIndex === index;
+    dot.classList.toggle('active', active);
+    dot.setAttribute('aria-current', String(active));
+  });
 }
 
 function showEditionImage(card, tier) {
@@ -337,6 +346,13 @@ $('#sortSelect').addEventListener('change', (event) => {
 $('#loadMore').addEventListener('click', () => fetchProducts());
 
 $('#productGrid').addEventListener('click', (event) => {
+  const imageDot = event.target.closest('.image-dot');
+  if (imageDot) {
+    const track = $('.product-image-track', imageDot.closest('.product-image'));
+    track.scrollTo({ left: Number(imageDot.dataset.imageIndex) * track.clientWidth, behavior: 'smooth' });
+    return;
+  }
+
   const option = event.target.closest('.size-option');
   if (option) {
     const card = option.closest('.product-card');
@@ -380,6 +396,10 @@ $('#productGrid').addEventListener('click', (event) => {
     addButton.firstChild.textContent = 'Add selection to bag ';
   }, 1200);
 });
+
+$('#productGrid').addEventListener('scroll', (event) => {
+  if (event.target.classList.contains('product-image-track')) syncGalleryDots(event.target);
+}, true);
 
 $('#clearFilters').addEventListener('click', () => {
   activeGender = 'all';

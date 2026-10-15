@@ -95,6 +95,10 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}body{min-width:280px}ma
 .image-edition{position:absolute;z-index:3;top:14px;right:14px;padding:7px 9px;background:rgba(12,8,10,.82);color:var(--cream);font-size:7px;letter-spacing:.14em;text-transform:uppercase;pointer-events:none}
 .image-edition.vip{background:var(--gold);color:var(--ink);font-weight:700}
 .product-card:hover .product-image-track img{transform:none}
+.image-dots{position:absolute;z-index:5;left:50%;bottom:14px;display:flex;gap:7px;transform:translateX(-50%)}
+.image-dot{width:8px;height:8px;padding:0;border:1px solid rgba(255,255,255,.82);border-radius:50%;background:rgba(255,255,255,.28);box-shadow:0 1px 5px rgba(12,8,10,.28);cursor:pointer;transition:background .2s,transform .2s}
+.image-dot.active{background:rgba(255,255,255,.96);transform:scale(1.12)}
+.image-dot:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 @media(max-width:420px){.featured-size{grid-template-columns:48px minmax(0,1fr)}.featured-size.has-vip>div{grid-template-columns:1fr 1fr}}
 
 /* Featured product gender corner ribbons */

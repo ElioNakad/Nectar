@@ -5,6 +5,8 @@ const q=(s,c=document)=>c.querySelector(s), qa=(s,c=document)=>[...c.querySelect
 const escapeHtml=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
 const VIP_PACKAGE_IMAGE='assets/nectar-vip-package.jpeg';
 
+function syncGalleryDots(track){const index=track.clientWidth?Math.round(track.scrollLeft/track.clientWidth):0;qa('.image-dot',track.parentElement).forEach((dot,dotIndex)=>{const active=dotIndex===index;dot.classList.toggle('active',active);dot.setAttribute('aria-current',String(active))})}
+
 const glow=q('.cursor-glow');
 window.addEventListener('pointermove',e=>{glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px'});
 window.addEventListener('scroll',()=>q('#nav').classList.toggle('scrolled',scrollY>40),{passive:true});
@@ -64,6 +66,8 @@ function renderCart(){
   saveCart();
 }
 q('#featuredGrid').addEventListener('click',event=>{
+  const imageDot=event.target.closest('.image-dot');
+  if(imageDot){const track=q('.product-image-track',imageDot.closest('.product-image'));track.scrollTo({left:Number(imageDot.dataset.imageIndex)*track.clientWidth,behavior:'smooth'});return}
   const btn=event.target.closest('.quick-add');
   if(!btn)return;
   const card=btn.closest('.product-card'),size=btn.dataset.size,tier=btn.dataset.tier||'Regular',price=Number(btn.dataset.price),key=`${card.dataset.id}-${size}-${tier.toLowerCase()}`,existing=cart.find(item=>item.key===key);
@@ -71,6 +75,7 @@ q('#featuredGrid').addEventListener('click',event=>{
   q('#toastDetail').textContent=`${size} ML · ${tier} · ${money(price)}`;
   renderCart();q('#toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>q('#toast').classList.remove('show'),2600);
 });
+q('#featuredGrid').addEventListener('scroll',event=>{if(event.target.classList.contains('product-image-track'))syncGalleryDots(event.target)},true);
 q('#closeToast').addEventListener('click',()=>q('#toast').classList.remove('show'));
 q('#bagBtn').addEventListener('click',openCart);q('#closeCart').addEventListener('click',closeCart);q('#cartOverlay').addEventListener('click',closeCart);
 q('#deliveryLocation').addEventListener('input',()=>{q('#deliveryLocation').removeAttribute('aria-invalid');q('#locationError').textContent='';updateCheckoutLink(cart.reduce((sum,item)=>sum+item.price*item.qty,0))});
@@ -99,7 +104,7 @@ async function loadFeaturedProducts(){
     const genderLabel=gender==='unspecified'?'Not specified':gender;
     const sizes=Array.isArray(product.sizes)?product.sizes:[];
     const options=sizes.map(size=>{const price=size.override_price??size.default_price??size.price;const hasVip=size.vip_enabled===true&&size.vip_price!==null;return `<div class="featured-size ${hasVip?'has-vip':''}"><span>${escapeHtml(size.capacity)} ML</span><div><button class="quick-add" data-size="${escapeHtml(size.capacity)}" data-tier="Regular" data-price="${escapeHtml(price)}"><small>Regular</small><b>${money(Number(price))}</b></button>${hasVip?`<button class="quick-add vip" data-size="${escapeHtml(size.capacity)}" data-tier="VIP" data-price="${escapeHtml(size.vip_price)}"><small>VIP</small><b>${money(Number(size.vip_price))}</b></button>`:''}</div></div>`}).join('');
-    return `<article class="product-card reveal visible" data-id="${escapeHtml(product.id)}" data-name="${escapeHtml(productName)}" data-image="${escapeHtml(productImage)}" data-gender="${escapeHtml(gender)}"><div class="product-image"><span class="gender-tag">${escapeHtml(genderLabel)}</span><div class="product-image-track" tabindex="0" aria-label="Images for ${escapeHtml(productName)}"><div class="product-image-slide"><img loading="lazy" src="${escapeHtml(productImage)}" alt="${escapeHtml(productName)} bottle"><span class="image-edition">Regular</span></div><div class="product-image-slide"><img loading="lazy" src="assets/nectar-vip-package.jpeg" alt="Nectar VIP presentation package for ${escapeHtml(productName)}"><span class="image-edition vip">VIP package</span></div></div></div><div class="product-info"><p>${escapeHtml(product.brand_name)}</p><h3>${escapeHtml(product.brand_name)}<br>${escapeHtml(product.name)}</h3><div class="featured-options">${options}</div></div></article>`;
+    return `<article class="product-card reveal visible" data-id="${escapeHtml(product.id)}" data-name="${escapeHtml(productName)}" data-image="${escapeHtml(productImage)}" data-gender="${escapeHtml(gender)}"><div class="product-image"><span class="gender-tag">${escapeHtml(genderLabel)}</span><div class="product-image-track" tabindex="0" aria-label="Images for ${escapeHtml(productName)}"><div class="product-image-slide"><img loading="lazy" src="${escapeHtml(productImage)}" alt="${escapeHtml(productName)} bottle"><span class="image-edition">Regular</span></div><div class="product-image-slide"><img loading="lazy" src="assets/nectar-vip-package.jpeg" alt="Nectar VIP presentation package for ${escapeHtml(productName)}"><span class="image-edition vip">VIP package</span></div></div><div class="image-dots" aria-label="Choose product image"><button class="image-dot active" type="button" data-image-index="0" aria-label="Show regular product image" aria-current="true"></button><button class="image-dot" type="button" data-image-index="1" aria-label="Show VIP package image" aria-current="false"></button></div></div><div class="product-info"><p>${escapeHtml(product.brand_name)}</p><h3>${escapeHtml(product.brand_name)}<br>${escapeHtml(product.name)}</h3><div class="featured-options">${options}</div></div></article>`;
   }).join('');
 }
 
